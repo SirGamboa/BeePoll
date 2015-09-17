@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="surbee_blue">#40C4FF</color>
+    <color name="surbee_blue_dark">#20A4FF</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="sync">#7BB241</color>
+    <color name="subtext">#212121</color>
+    <color name="text_content">#757575</color>
+    <color name="yellow_bee">#FFE05F</color>
+    <color name="btn_submit">#303539</color>
+    <color name="gris_titulo">#EEEEEE</color>
+</resources>

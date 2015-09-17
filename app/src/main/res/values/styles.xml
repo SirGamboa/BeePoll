@@ -1,0 +1,11 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/surbee_blue</item>
+        <item name="colorPrimaryDark">@color/surbee_blue_dark</item>
+        <!-- Customize your theme here. -->
+    </style>
+
+</resources>
