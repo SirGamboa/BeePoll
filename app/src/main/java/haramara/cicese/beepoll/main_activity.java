@@ -6,12 +6,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
 import android.view.MenuItem;
+import android.view.View;
 
+import android.widget.TextView;
 
 
 /**
@@ -22,6 +25,9 @@ public class main_activity  extends AppCompatActivity{
     private DrawerLayout mDrawerLayout;
     private String[] fViews;
     private String drawerTitle;
+    ActionBarDrawerToggle mDrawerToggle;
+    String nHeader = "Rodolfo Robles";
+    String eHeader= "rodosel@gmail.com";
 
     String TAG = "MainActivity";
 
@@ -42,6 +48,27 @@ public class main_activity  extends AppCompatActivity{
         setToolbar();
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.DrawerLayout);
+        mDrawerToggle = new ActionBarDrawerToggle(this,mDrawerLayout,toolbar,R.string.open_drawer,R.string.close_drawer){
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                // code here will execute once the drawer is opened( As I dont want anything happened whe drawer is
+                // open I am not going to put anything here)
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+                // Code here will execute once drawer is closed
+            }
+
+
+
+        }; // Drawer Toggle Object Made
+        mDrawerLayout.setDrawerListener(mDrawerToggle); // Drawer Listener set to the Drawer toggle
+        mDrawerToggle.syncState();               // Finally we set the drawer toggle sync State
+
         NavigationView mNavigationView = (NavigationView) findViewById(R.id.navView);
         if(mNavigationView != null){
             // something
@@ -56,11 +83,21 @@ public class main_activity  extends AppCompatActivity{
 
     }
     private void setupDrawerContent(NavigationView nView) {
+        //--
+        TextView tvHeader =  (TextView) nView.findViewById(R.id.nameHeader);
+        TextView tvMail =  (TextView) nView.findViewById(R.id.email);
+        // metodo para cargar de DB nombre y correo. **
+        tvHeader.setText(nHeader);
+        tvMail.setText(eHeader);
+        //--
+
         nView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
                 menuItem.setChecked(true);
                 String title = menuItem.getTitle().toString();
+                Log.i(TAG,""+menuItem.getItemId() );
+
                 selectItem(title);
                 return true;
             }
@@ -72,6 +109,10 @@ public class main_activity  extends AppCompatActivity{
 //        Bundle args = new Bundle();
 //        args.putString(PlaceHolderFragment.ARG_SECTION_TITLE, title);
         String frg = "haramara.cicese.beepoll."+title;
+        if(title.contentEquals("Encuestas")){
+            frg = "haramara.cicese.beepoll.fEncuestas";
+        }
+
         Log.i(TAG,frg);
 
 //        Fragment fragment = PlaceHolderFragment.newInstance(title);
@@ -94,7 +135,7 @@ public class main_activity  extends AppCompatActivity{
         final ActionBar ab = getSupportActionBar();
         if (ab != null) {
             // Poner ícono del drawer toggle
-            ab.setHomeButtonEnabled(true);
+//            ab.setHomeButtonEnabled(true);
             ab.setHomeAsUpIndicator(R.mipmap.ic_launcher);
             ab.setDisplayHomeAsUpEnabled(true);
         }

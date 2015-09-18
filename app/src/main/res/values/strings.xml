@@ -68,8 +68,10 @@
 
     <!-- -->
     <string name="home_item">Home</string>
+    <string name="contenido">contenido</string>
     <string-array name="navDrawerItems">
-        <item>haramara.cicese.drawerview.fragment1</item>
-        <item>haramara.cicese.drawerview.fragment2</item>
+        <item>Home</item>
+        <item>fragment1</item>
+        <item>fragment2</item>
     </string-array>
 </resources>

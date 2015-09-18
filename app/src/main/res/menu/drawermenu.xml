@@ -2,21 +2,28 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
-           <menu>
-                <item
-                    android:id="@+id/nav_otro_item"
-                    android:icon="@android:drawable/alert_dark_frame"
-                    android:title="Home" />
-            </menu>
         <item
-            android:id="@+id/navigation_item_1"
+            android:id="@+id/navEncuestas"
             android:checked="true"
-            android:icon="@android:drawable/alert_light_frame"
-            android:title="fragment1" />
+            android:icon="@android:drawable/arrow_down_float"
+            android:title="Encuestas" />
         <item
-            android:id="@+id/navigation_item_2"
-            android:icon="@android:drawable/bottom_bar"
+            android:id="@+id/navBorradores"
+            android:icon="@android:drawable/alert_light_frame"
             android:title="fragment2" />
+        <item
+            android:id="@+id/navBandeja"
+            android:icon="@android:drawable/bottom_bar"
+            android:title="Bandeja de Salida" />
+        <item
+            android:id="@+id/navEnviados"
+            android:icon="@android:drawable/bottom_bar"
+            android:title="Enviados" />
+        <item
+            android:id="@+id/navConfig"
+            android:menuCategory="secondary"
+            android:icon="@android:drawable/bottom_bar"
+            android:title="Configuración" />
 
     </group>
 </menu>
