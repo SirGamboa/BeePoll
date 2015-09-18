@@ -5,6 +5,7 @@
     android:layout_height="55dip"
     android:orientation="horizontal"
     >
+
     <TextView
         android:id="@+id/lblListItem"
         android:layout_width="match_parent"
@@ -15,5 +16,16 @@
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
         android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft"
-        tools:ignore="UnusedAttribute" />
+        tools:ignore="UnusedAttribute"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentTop="true" />
+
+    <ImageButton
+        android:layout_width="22dp"
+        android:layout_height="fill_parent"
+        android:id="@+id/imageButton"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:background="#f8d421" />
+
 </RelativeLayout>
