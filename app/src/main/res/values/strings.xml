@@ -65,5 +65,11 @@
     <string name="hombre">Hombre</string>
     <string name="mujer">Mujer</string>
     <string name="tPrueba">Texto de prueba</string>
+
     <!-- -->
+    <string name="home_item">Home</string>
+    <string-array name="navDrawerItems">
+        <item>haramara.cicese.drawerview.fragment1</item>
+        <item>haramara.cicese.drawerview.fragment2</item>
+    </string-array>
 </resources>

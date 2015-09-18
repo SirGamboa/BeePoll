@@ -70,6 +70,7 @@
         android:src="@drawable/ayuda_icon"
         android:layout_alignBottom="@+id/instruccciones"
         android:layout_alignParentEnd="true"
-        android:layout_below="@+id/button_submit" />
+        android:layout_below="@+id/button_submit"
+        android:layout_marginRight="15dp" />
 
 </RelativeLayout>

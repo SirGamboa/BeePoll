@@ -1,24 +1,28 @@
 package haramara.cicese.beepoll;
 
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.Toast;
+
+import android.view.MenuItem;
+
 
 
 /**
  * Created by diseno on 9/14/15. for BeePoll
  */
-public class main_activity  extends ActionBarActivity{
+public class main_activity  extends AppCompatActivity{
     private Toolbar toolbar;
+    private DrawerLayout mDrawerLayout;
+    private String[] fViews;
+    private String drawerTitle;
+
     String TAG = "MainActivity";
 
     String TITLES[] = {"Encuestas","Borradores","Enviados","Bandeja de salida","Configuración"};
@@ -28,97 +32,72 @@ public class main_activity  extends ActionBarActivity{
             R.mipmap.ic_action_send_now,
             R.mipmap.ic_action_settings
     };
-    int SWITHCES[] ={0,0,0,0,1};
-    String NAME = "User NAme";
-    String EMAIL = "user@beepoll.srv";
-    int PROFILE = R.drawable.logo_beepoll_01;
 
-    RecyclerView mRecyclerView;                           // Declaring RecyclerView
-    RecyclerView.Adapter mAdapter;                        // Declaring Adapter For Recycler View
-    RecyclerView.LayoutManager mLayoutManager;            // Declaring Layout Manager as a linear layout manager
-    DrawerLayout Drawer;                                  // Declaring DrawerLayout
-
-    ActionBarDrawerToggle mDrawerToggle;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
-        toolbar = (Toolbar) findViewById(R.id.tool_bar);
-        setSupportActionBar(toolbar);
+        fViews = getResources().getStringArray(R.array.navDrawerItems);
 
-        getSupportActionBar().setDisplayUseLogoEnabled(true);
-        getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("BEEPOLL");
+        setToolbar();
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.RecyclerView);
-        mRecyclerView.setHasFixedSize(true);
-        mAdapter = new MyAdapter(TITLES,ICONS,NAME,EMAIL,PROFILE,SWITHCES, getApplicationContext());
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.DrawerLayout);
+        NavigationView mNavigationView = (NavigationView) findViewById(R.id.navView);
+        if(mNavigationView != null){
+            // something
+            setupDrawerContent(mNavigationView);
+        }
+        drawerTitle = getResources().getString(R.string.home_item);
+        if(savedInstanceState == null ){
+            //selec item
+            selectItem(drawerTitle);
+        }
 
-        mRecyclerView.setAdapter(mAdapter);                              // Setting the adapter to RecyclerView
 
-
-        final GestureDetector mGestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
+    }
+    private void setupDrawerContent(NavigationView nView) {
+        nView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public boolean onSingleTapUp(MotionEvent e) {
-                Log.i(TAG, "GestureDetected");
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+                menuItem.setChecked(true);
+                String title = menuItem.getTitle().toString();
+                selectItem(title);
                 return true;
             }
-
         });
-        mRecyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
-            @Override
-            public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-                View child = rv.findChildViewUnder(e.getX(), e.getY());
+    }
 
-                if (child != null && mGestureDetector.onTouchEvent(e)) {
-                    Drawer.closeDrawers();
-                    Toast.makeText(getApplicationContext(), "The Item Clicked is: " + rv.getChildPosition(child), Toast.LENGTH_SHORT).show();
+    private void selectItem(String title) {
+        // Enviar título como arguemento del fragmento
+//        Bundle args = new Bundle();
+//        args.putString(PlaceHolderFragment.ARG_SECTION_TITLE, title);
+        String frg = "haramara.cicese.beepoll."+title;
+        Log.i(TAG,frg);
 
-                    return true;
-                }
-                return false;
-            }
-
-            @Override
-            public void onTouchEvent(RecyclerView rv, MotionEvent e) {
-
-            }
-
-            @Override
-            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-
-            }
-        });
-
-        mLayoutManager = new LinearLayoutManager(this);                 // Creating a layout Manager
-
-        mRecyclerView.setLayoutManager(mLayoutManager);                 // Setting the layout Manager
+//        Fragment fragment = PlaceHolderFragment.newInstance(title);
+//        fragment.setArguments(args);
+//        Log.i(TAG, fragment.toString());
 
 
-        Drawer = (DrawerLayout) findViewById(R.id.DrawerLayout);        // Drawer object Assigned to the view
-        mDrawerToggle = new ActionBarDrawerToggle(this,Drawer,toolbar,R.string.open_drawer,R.string.close_drawer){
+        FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
+        tx.replace(R.id.main_content, Fragment.instantiate(this, frg));
+        tx.commit();
 
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                // code here will execute once the drawer is opened( As I dont want anything happened whe drawer is
-                // open I am not going to put anything here)
-            }
+        mDrawerLayout.closeDrawers(); // Cerrar drawer
 
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed(drawerView);
-                // Code here will execute once drawer is closed
-            }
+        setTitle(title); // Setear título actual
+    }
+    private void setToolbar() {
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-
-
-        }; // Drawer Toggle Object Made
-        Drawer.setDrawerListener(mDrawerToggle); // Drawer Listener set to the Drawer toggle
-        mDrawerToggle.syncState();               // Finally we set the drawer toggle sync State
-
-
-
+        final ActionBar ab = getSupportActionBar();
+        if (ab != null) {
+            // Poner ícono del drawer toggle
+            ab.setHomeButtonEnabled(true);
+            ab.setHomeAsUpIndicator(R.mipmap.ic_launcher);
+            ab.setDisplayHomeAsUpEnabled(true);
+        }
     }
 
 
