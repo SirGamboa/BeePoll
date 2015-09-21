@@ -4,6 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="55dip"
     android:orientation="horizontal"
+    android:background="@color/yellow_bee"
+
     >
 
     <TextView
@@ -20,12 +22,21 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentTop="true" />
 
-    <ImageButton
-        android:layout_width="22dp"
+    <Button
+        android:layout_width="55dp"
         android:layout_height="fill_parent"
-        android:id="@+id/imageButton"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:background="#f8d421" />
+        android:id="@+id/imageView"
+        android:background="#fdff46"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Small Text"
+        android:id="@+id/textView"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

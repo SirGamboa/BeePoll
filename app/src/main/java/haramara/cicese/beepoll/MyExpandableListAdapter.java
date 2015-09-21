@@ -3,10 +3,12 @@ package haramara.cicese.beepoll;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.HashMap;
@@ -51,9 +53,11 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = infalInflater.inflate(R.layout.encuestas_listrowdetails, null);
         }
-
+//        ImageView RayaAmarilla = (ImageView) convertView.findViewById(R.id.imageView);
         TextView txtListChild = (TextView) convertView
                 .findViewById(R.id.lblListItem);
+
+//        RayaAmarilla.setVisibility(View.VISIBLE);
 
         txtListChild.setText(childText);
         return convertView;
