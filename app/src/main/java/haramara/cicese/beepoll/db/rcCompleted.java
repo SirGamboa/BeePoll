@@ -202,7 +202,23 @@ public class rcCompleted {
 
     public void deleteBorrador(String[] sborrador) {
         String sqlDel = dbTable.COLUMN_NAME_IDEDO+" = '"+ sborrador[0] + "' and " + dbTable.COLUMN_NAME_IDENC + " = '"+ sborrador[1]+"'";
-        database.delete(dbTable.TABLE_NAME,sqlDel,null);
+        database.delete(dbTable.TABLE_NAME, sqlDel, null);
+    }
+
+    public int getTtlSend() {
+        Cursor c; int i;
+        String sql = "select distinct "
+                + dbTable.COLUMN_NAME_IDEDO
+                + " , "
+                + dbTable.COLUMN_NAME_IDENC
+                +" from "
+                +dbTable.TABLE_NAME
+                + " where status = 1";
+        c = database.rawQuery(sql,null);
+        i =  c.getCount();
+        c.close();
+        return i;
+
     }
 }
 

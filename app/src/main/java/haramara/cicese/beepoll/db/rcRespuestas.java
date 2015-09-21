@@ -147,6 +147,20 @@ public class rcRespuestas {
         c.close();
         return i;
     }
+    public int readTtlEnviados() {
+        Cursor c; int i;
+        String sql = "select distinct "
+                + dbTable.COLUMN_NAME_ENCUESTA_ID
+                + " , "
+                + dbTable.COLUMN_NAME_ENCUESTADO_ID
+                +" from "
+                +dbTable.TABLE_NAME
+                + " where status = 0";
+        c = database.rawQuery(sql,null);
+        i =  c.getCount();
+        c.close();
+        return i;
+    }
 
     @SuppressWarnings("UnusedReturnValue")
     public boolean updateSurvey(int id_encuesta, String id_encuestado) {

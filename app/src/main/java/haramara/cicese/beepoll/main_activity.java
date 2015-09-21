@@ -31,7 +31,7 @@ public class main_activity  extends AppCompatActivity{
 
     String TAG = "MainActivity";
 
-    String TITLES[] = {"Encuestas","Borradores","Enviados","Bandeja de salida","Configuración"};
+    String TITLES[] = {"Encuestas","Borradores","Enviados","Bandeja de salida","Cerrar Sesión"};
     int ICONS[] = {R.mipmap.ic_action_collection,
             R.mipmap.ic_action_discard,
             R.mipmap.ic_action_view_as_list,
@@ -43,7 +43,7 @@ public class main_activity  extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
-        fViews = getResources().getStringArray(R.array.navDrawerItems);
+//        fViews = getResources().getStringArray(R.array.navDrawerItems);
 
         setToolbar();
 
@@ -74,7 +74,7 @@ public class main_activity  extends AppCompatActivity{
             // something
             setupDrawerContent(mNavigationView);
         }
-        drawerTitle = getResources().getString(R.string.home_item);
+        drawerTitle = getResources().getString(R.string.Encuestas);
         if(savedInstanceState == null ){
             //selec item
             selectItem(drawerTitle);
@@ -105,25 +105,41 @@ public class main_activity  extends AppCompatActivity{
     }
 
     private void selectItem(String title) {
+        boolean flag = true;
         // Enviar título como arguemento del fragmento
 //        Bundle args = new Bundle();
 //        args.putString(PlaceHolderFragment.ARG_SECTION_TITLE, title);
         String frg = "haramara.cicese.beepoll."+title;
-        if(title.contentEquals("Encuestas")){
+        if(title.contentEquals("Encuestas")|| title.contentEquals("fEncuestas")){
             frg = "haramara.cicese.beepoll.fEncuestas";
+            flag = true;
+        }
+        if(title.contentEquals("Borradores")){
+            frg = "haramara.cicese.beepoll.fListados";
+            flag = true;
+        }
+        if(title.contentEquals("Enviados")){
+            frg = "haramara.cicese.beepoll.fListados";
+        }
+        if(title.contentEquals("Bandeja de Salida")){
+            frg = "haramara.cicese.beepoll.fListados";
+            flag = true;
+        }
+        if(title.contentEquals("Configuración")){
+            flag = true;
+            frg = "haramara.cicese.beepoll.fLogoff";
+        }
+        if(title.contentEquals("Cerrar Sesión")){
+            flag = true;
+            frg = "haramara.cicese.beepoll.fLogoff";
         }
 
         Log.i(TAG,frg);
-
-//        Fragment fragment = PlaceHolderFragment.newInstance(title);
-//        fragment.setArguments(args);
-//        Log.i(TAG, fragment.toString());
-
-
-        FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
-        tx.replace(R.id.main_content, Fragment.instantiate(this, frg));
-        tx.commit();
-
+        if(flag) {
+            FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
+            tx.replace(R.id.main_content, Fragment.instantiate(this, frg));
+            tx.commit();
+        }
         mDrawerLayout.closeDrawers(); // Cerrar drawer
 
         setTitle(title); // Setear título actual

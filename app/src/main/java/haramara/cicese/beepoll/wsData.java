@@ -23,7 +23,7 @@ import java.sql.SQLException;
 import haramara.cicese.beepoll.db.dbEncuestas;
 import haramara.cicese.beepoll.db.dbOpciones;
 import haramara.cicese.beepoll.db.dbPreguntas;
-import haramara.cicese.beepoll.db.dbRelacion;
+//import haramara.cicese.beepoll.db.dbRelacion;
 import haramara.cicese.beepoll.db.rcConfig;
 import haramara.cicese.beepoll.db.rcEncuestas;
 import haramara.cicese.beepoll.db.rcOpciones;
@@ -63,7 +63,7 @@ private dbEncuestas dbEnc;
 private dbPreguntas dbPreg;
 private dbOpciones dbOpc;
 private rcConfig rcCon;
-private dbRelacion dbRel;
+//private dbRelacion dbRel;
 private static final String targetURL = "http://idi.cicese.mx/surbeeweb/webService/";
 //    targetURL = "http://idi.cicese.mx/surbeeweb-ut3/webService/";
 //    static final String targetURL = "http://idi.cicese.mx/surbeeweb-demo/webService/";
@@ -381,7 +381,6 @@ private final String TAG = "WSSearch";
         }finally{
             if(con != null){
                 con.disconnect();
-
             }
         }
 

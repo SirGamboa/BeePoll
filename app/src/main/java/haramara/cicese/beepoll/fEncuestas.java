@@ -1,12 +1,13 @@
 package haramara.cicese.beepoll;
 
-import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -32,7 +33,6 @@ import haramara.cicese.beepoll.db.rcConfig;
 import haramara.cicese.beepoll.db.rcEncuestas;
 import haramara.cicese.beepoll.db.rcRelacion;
 
-import  android.app.Activity.*;
 
 /**
  * Created by diseno on 9/18/15. for BeePoll
@@ -40,6 +40,7 @@ import  android.app.Activity.*;
 public class fEncuestas extends Fragment {
     private ViewGroup root;
     private static final String TAG = "FragEncuestas";
+    private  SwipeRefreshLayout mSwipeRefreshLayout;
     //---
     private List<String> listDataHeader;
     private HashMap<String, List<String>> listDataChild;
@@ -61,6 +62,14 @@ public class fEncuestas extends Fragment {
         email = "";
         pb = (ProgressBar) root.findViewById(R.id.pbar);
         pb.setVisibility(View.INVISIBLE);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) root.findViewById(R.id.swipe_refresh_layout);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Log.i(TAG,"Refreshed");
+                wsLoadJSON();
+            }
+        });
         setHasOptionsMenu(true);
         //--- leer existe encuestas para usuario
         try {
@@ -82,43 +91,34 @@ public class fEncuestas extends Fragment {
             //checar si existen encuestas
             if(rcEnc.getListEncsLenght(IDUser)> 0) {
                 rcEnc.close();
-//                ListEncuestas();
-
+                ListEncuestas();
             }
             Log.i(TAG, "FlagEncuestas ListEncuestas");
         }
         rcEnc.close();
-//        //--- Button
-//        Button btnSync = (Button) root.findViewById(R.id.btnSync);
-//        btnSync.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                Log.i(TAG, "CLICKED SYNC!");
-//                //borrar encuestas
-////                deleteDatos();
-//                //--- WS Load JSON API
-//                ws = new wsData();
-//                if(flagEncs) {
-//                    pb.setVisibility(View.VISIBLE);
-//                    pb.setProgress(50);
-//                    //noinspection unchecked
-//                    new loadWS().execute();
-//                }
-//                else Log.i(TAG, "EMPTY email");
-//
-//
-//            }
-//        });
+        mSwipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                mSwipeRefreshLayout.setRefreshing(false);
+                Log.i(TAG, "RUNNABLE");
+//                ListEncuestas();
+            }
+        });
+
 
      return root;
     }
 
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // TODO Auto-generated method stub
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_encuestas, menu);
+
+        if(getActivity().getTitle().toString().contentEquals("Encuestas")){
+            super.onCreateOptionsMenu(menu, inflater);
+            inflater.inflate(R.menu.menu_encuestas, menu);
+        }
+      //  inflater.inflate(R.menu.menu_encuestas, menu);
     }
 
     @Override
@@ -126,22 +126,24 @@ public class fEncuestas extends Fragment {
         // handle item selection
         switch (item.getItemId()) {
             case R.id.action_sync:
-                Log.i(TAG, "CLICKED SYNC! WSData" );
-
-                //--- WS Load JSON API
-                ws = new wsData();
-                if(flagEncs) {
-                    pb.setVisibility(View.VISIBLE);
-                    pb.setProgress(50);
-                    //noinspection unchecked
-                    new loadWS().execute();
-                }
-                else Log.i(TAG, "EMPTY email");
-
-
+                Log.i(TAG, "CLICKED SYNC! WSData");
+                wsLoadJSON();
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void wsLoadJSON() {
+        //--- WS Load JSON API
+        ws = new wsData();
+        if(flagEncs) {
+            pb.setVisibility(View.VISIBLE);
+            pb.setProgress(50);
+            //noinspection unchecked
+            new loadWS().execute();
+        }
+        else Log.i(TAG, "EMPTY email");
+
     }
 
     private void ListEncuestas(){
@@ -172,9 +174,14 @@ public class fEncuestas extends Fragment {
                         listDataHeader.get(groupPosition)).get(
                         childPosition));
                 Log.i(TAG, "Click Get:" + listDataHeader.get(groupPosition));
+//                String frg = "haramara.cicese.beepoll.fEncuesta_view";
+//                FragmentTransaction tx =getChildFragmentManager().beginTransaction();
+//
+//                tx.add(R.id.main_content, Fragment.instantiate(cntx, frg));
+//                tx.commit();
                 Intent iSelected = new Intent(cntx, encuesta_activity.class);
                 iSelected.putExtra("ENC", listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition));
-                //iSelected.putExtra("CP",childPosition);
+                iSelected.putExtra("CP",childPosition);
                 startActivityForResult(iSelected, REQUEST_CODE);
 
                 return false;
@@ -250,12 +257,14 @@ public class fEncuestas extends Fragment {
                     @Override
                     public void run() {
                         pb.setVisibility(View.GONE);
+                        mSwipeRefreshLayout.setRefreshing(false);
                         if (flagEdo) {
                             //--- Load info to Expandible list
                             ListEncuestas();
                         } else
                             Toast.makeText(cntx, "No hay encuestas disponible para el usuario: " + email, Toast.LENGTH_SHORT).show();
                     }
+
                 });
                 /* ***************** */
                 rcCon.close();

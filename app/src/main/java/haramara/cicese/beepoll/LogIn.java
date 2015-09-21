@@ -1,6 +1,7 @@
 package haramara.cicese.beepoll;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +24,7 @@ import haramara.cicese.beepoll.db.rcConfig;
 import haramara.cicese.beepoll.db.rcOpciones;
 import haramara.cicese.beepoll.db.rcPreguntas;
 import haramara.cicese.beepoll.db.rcRelacion;
+
 
 public class LogIn extends AppCompatActivity {
     private final String TAGTEXT = this.getClass().getName();
@@ -37,12 +40,25 @@ public class LogIn extends AppCompatActivity {
     private int requestCode;
     private int readEmail;
     private Handler mHandler;
+    private ProgressBar pbLogoff;
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_in);
         instruccciones = (TextView) findViewById(R.id.instruccciones);
+        pbLogoff = (ProgressBar) findViewById(R.id.pbLogoff);
+        pbLogoff.setVisibility(View.INVISIBLE);
         //Image boton ?
         imageView2 = (ImageView) findViewById(R.id.imageView2);
         //noinspection ConstantConditions
@@ -92,6 +108,7 @@ public class LogIn extends AppCompatActivity {
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
+
                 }
             }
         });
@@ -139,9 +156,17 @@ public class LogIn extends AppCompatActivity {
             btn_send.setVisibility(View.VISIBLE);
         }
         if(resultCode == 44){
+            Log.i(TAG,"Regresé de Config Cerrar Sesióm");
             rcPreguntas rcPreg = new rcPreguntas(getApplicationContext());
             rcOpciones rcOpcs = new rcOpciones(getApplicationContext());
             rcRelacion rcRel = new rcRelacion(getApplicationContext());
+
+            pbLogoff.setVisibility(View.VISIBLE);
+            pbLogoff.setProgress(70);
+
+            new execute();
+
+
             try {
                 rc.open();
                 rcPreg.open();
@@ -163,6 +188,7 @@ public class LogIn extends AppCompatActivity {
             rcPreg.close();
             rcOpcs.close();
             rc.close();
+            pbLogoff.setVisibility(View.GONE);
         }
 
     }
@@ -187,5 +213,29 @@ public class LogIn extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private class execute extends AsyncTask {
+        @Override
+        protected Object doInBackground(Object[] objects) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+//                    pbLogoff.setVisibility(View.GONE);
+                    Log.i(TAG,"Running LogOff");
+                    mHandler = new Handler();
+                    mHandler.postDelayed(this,4000);
+                    pbLogoff.setVisibility(View.GONE);
+
+                }
+            });
+
+
+            return null;
+        }
+
+        public execute() {
+            super();
+        }
     }
 }

@@ -15,10 +15,8 @@
         android:id="@+id/logo_survey"
         android:contentDescription="@string/logo"
         android:layout_alignWithParentIfMissing="false"
-        android:layout_marginTop="26dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="13dp"/>
+        android:layout_alignTop="@+id/pbLogoff"
+        android:layout_centerHorizontal="true" />
 
     <EditText
         android:layout_width="333dp"
@@ -27,18 +25,18 @@
         android:id="@+id/email_holder"
         android:textColor="@color/black"
         android:inputType="textEmailAddress"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/logo_survey"
         android:hint="Correo electrónico"
         android:focusableInTouchMode="true"
         android:paddingLeft="90dp"
-        android:paddingRight="40dp" />
+        android:paddingRight="40dp"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
 
     <Button
         android:layout_width="200dp"
         android:layout_height="40dp"
         android:layout_gravity="center"
-        android:background="@drawable/helpbutton"
+        android:background="@color/btn_submit"
         android:textColor="@color/white"
         android:text="@string/btn_submit"
         android:id="@+id/button_submit"
@@ -46,8 +44,9 @@
         android:paddingRight="10dp"
         android:padding="2dp"
         android:paddingTop="2dp"
-        android:layout_below="@+id/pbLogoff"
-        android:layout_alignStart="@+id/logo_survey" />
+        android:layout_above="@+id/instruccciones"
+        android:layout_alignStart="@+id/logo_survey"
+        android:layout_marginBottom="71dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -57,26 +56,25 @@
         android:gravity="center"
         android:text="@string/Instrucciones"
         android:id="@+id/instruccciones"
-        android:layout_below="@+id/button_submit"
-        android:layout_alignEnd="@+id/email_holder"
-        android:layout_alignStart="@+id/email_holder" />
+        android:layout_alignTop="@+id/imageView2"
+        android:layout_centerHorizontal="true" />
 
-    <Button
-        android:layout_width="20dp"
-        android:layout_height="30dp"
+    <ImageView
+        android:layout_width="35dp"
+        android:layout_height="35dp"
         android:id="@+id/imageView2"
         android:src="@drawable/ayuda_icon"
-        android:background="@drawable/helpbutton"
-        android:layout_alignBottom="@+id/instruccciones"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_below="@+id/button_submit"
-        android:layout_marginRight="15dp" />
+        android:layout_marginEnd="31dp"
+        android:layout_marginBottom="29dp" />
 
     <ProgressBar
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/pbLogoff"
-        android:layout_below="@+id/logo_survey"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="92dp" />
 
 </RelativeLayout>
