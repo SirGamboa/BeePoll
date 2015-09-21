@@ -67,11 +67,22 @@
     <string name="tPrueba">Texto de prueba</string>
 
     <!-- -->
-    <string name="home_item">Home</string>
+    <string name="Encuestas">fEncuestas</string>
+    <string name="Borradores">fBorradores</string>
+    <string name="Enviados">fEnviados</string>
+    <string name="Bandeja">fBandeja</string>
+    <string name="Configuracion">fConfiguracion</string>
     <string name="contenido">contenido</string>
-    <string-array name="navDrawerItems">
-        <item>Home</item>
-        <item>fragment1</item>
-        <item>fragment2</item>
-    </string-array>
+    <string name="button_send">Continuar</string>
+    <string name="title_encuesta">Large Text</string>
+    <string name="proyect_encuesta">Medium Text</string>
+    <string name="desc_encuesta">Small Text</string>
+    <string name="edoTitle">Encuestado Nuevo</string>
+    <string name="sendTextdate">Medium Text</string>
+    <string name="none">none</string>
+    <!--<string-array name="navDrawerItems">-->
+        <!--<item>Home</item>-->
+        <!--<item>fragment1</item>-->
+        <!--<item>fragment2</item>-->
+    <!--</string-array>-->
 </resources>

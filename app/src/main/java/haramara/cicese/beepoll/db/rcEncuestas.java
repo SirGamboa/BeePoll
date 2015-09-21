@@ -143,6 +143,27 @@ public class rcEncuestas {
         return s;
     }
 
+    public String getEncNameEnviados(String s) {
+        Cursor c;
+        String sql = "select "
+                + dbTable.COLUMN_NAME_NOMBRE
+                + " , "
+                + dbTable.COLUMN_NAME_ETIQUETA
+                +" from "
+                +dbTable.TABLE_NAME
+                + "  where "
+                + dbTable.COLUMN_NAME_IDENCUESTA
+                +"= '"+ s +"'";
+        c = database.rawQuery(sql,null);
+        c.moveToFirst();
+        while(!c.isAfterLast()){
+            s = c.getString(0)+":"+c.getString(1);
+            c.moveToNext();
+        }
+        c.close();
+        return s;
+    }
+
     public void deleteEncs() {
         database.delete(dbTable.TABLE_NAME, null, null);
     }

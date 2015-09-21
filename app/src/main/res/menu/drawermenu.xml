@@ -10,7 +10,7 @@
         <item
             android:id="@+id/navBorradores"
             android:icon="@android:drawable/alert_light_frame"
-            android:title="fragment2" />
+            android:title="Borradores" />
         <item
             android:id="@+id/navBandeja"
             android:icon="@android:drawable/bottom_bar"

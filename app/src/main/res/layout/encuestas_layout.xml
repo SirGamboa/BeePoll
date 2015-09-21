@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/proyect_encuesta"
+        android:id="@+id/titleEncuesta"
+        android:layout_below="@+id/toolbar"
+        android:layout_centerHorizontal="true"
+        android:paddingTop="25dp"
+        android:textColor="#3fc3ff"
+        android:textSize="25sp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:gravity="center_vertical" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/title_encuesta"
+        android:id="@+id/infoEncuesta"
+        android:paddingTop="25dp"
+        android:textColor="#36464e"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:gravity="center_vertical" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/desc_encuesta"
+        android:id="@+id/subInfoEncuesta"
+        android:layout_below="@+id/infoEncuesta"
+        android:background="@color/gris_titulo"
+        android:textColor="#ffffff"
+        android:layout_alignEnd="@+id/btFAB"
+        android:layout_above="@+id/btFAB"
+        android:paddingStart="30dp"
+        android:singleLine="false"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:gravity="center_vertical" />
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/btFAB"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_margin="15dp"
+        android:layout_gravity="left|bottom"
+        android:src="@mipmap/ic_action_help"
+        app:elevation="6dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="26dp" />
+
+</RelativeLayout>

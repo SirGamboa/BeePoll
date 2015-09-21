@@ -6,7 +6,7 @@
         android:id="@+id/action_sync"
         android:icon="@drawable/ayuda_icon"
         android:title="Sincronizar"
-        app:showAsAction="always"
+        app:showAsAction="ifRoom"
         />
 
 </menu>

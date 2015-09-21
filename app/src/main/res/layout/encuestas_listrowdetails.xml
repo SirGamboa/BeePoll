@@ -2,26 +2,36 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="55dip"
+    android:layout_height="85dp"
     android:orientation="horizontal"
     android:background="@color/yellow_bee"
 
     >
 
+
+    <ImageView
+        android:layout_width="8dp"
+        android:layout_height="85dp"
+        android:id="@+id/imageView3"
+        android:layout_alignParentTop="true"
+        android:background="#f8d421"
+        android:contentDescription="@string/none" />
+
     <TextView
         android:id="@+id/lblListItem"
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textSize="14sp"
+        android:text="@string/app_name"
         android:fontFamily="Roboto"
-        android:textColor="#0583Af"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
+        android:textColor="#36464e"
         android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft"
         tools:ignore="UnusedAttribute"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentTop="true" />
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true" />
 
+
+<<<<<<< HEAD
     <Button
         android:layout_width="55dp"
         android:layout_height="fill_parent"
@@ -38,5 +48,7 @@
         android:id="@+id/textView"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
+=======
+>>>>>>> 88cc7001b6f3a3509c11847889f188c5486aed64
 
 </RelativeLayout>
