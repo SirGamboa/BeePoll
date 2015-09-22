@@ -3,10 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="85dp"
-    android:orientation="horizontal"
-    android:background="@color/yellow_bee"
-
-    >
+    android:orientation="horizontal">
 
 
     <ImageView
@@ -31,24 +28,5 @@
         android:layout_alignParentEnd="true" />
 
 
-<<<<<<< HEAD
-    <Button
-        android:layout_width="55dp"
-        android:layout_height="fill_parent"
-        android:id="@+id/imageView"
-        android:background="#fdff46"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Small Text"
-        android:id="@+id/textView"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
-=======
->>>>>>> 88cc7001b6f3a3509c11847889f188c5486aed64
 
 </RelativeLayout>
