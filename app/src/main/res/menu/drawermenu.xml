@@ -24,6 +24,11 @@
             android:menuCategory="secondary"
             android:icon="@android:drawable/bottom_bar"
             android:title="Configuración" />
+        <item
+            android:id="@+id/navSession"
+            android:menuCategory="secondary"
+            android:icon="@android:drawable/bottom_bar"
+            android:title="Cerrar Sesión" />
 
     </group>
 </menu>
