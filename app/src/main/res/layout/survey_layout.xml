@@ -109,11 +109,11 @@
     </LinearLayout>
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/btFAB"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_margin="15dp"
         android:layout_gravity="left|bottom"
-        android:src="@mipmap/ic_action_help"
+        android:src="@mipmap/ic_navigate_next_white_36dp"
         app:elevation="6dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"

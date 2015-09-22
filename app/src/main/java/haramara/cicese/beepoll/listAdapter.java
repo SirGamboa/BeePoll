@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -366,14 +367,6 @@ public class listAdapter extends BaseAdapter {
         //--- http URL Connection
         URL url = new URL(wsPost);
         Log.i(TAG, url.toString());
-        HttpURLConnection clienteURL = (HttpURLConnection) url.openConnection();
-        clienteURL.setRequestProperty("Accept-Encoding","");
-        clienteURL.setDoOutput(true);
-        clienteURL.setRequestMethod("POST");
-        clienteURL.setUseCaches(false);
-        clienteURL.setConnectTimeout(10000);
-        clienteURL.setReadTimeout(10000);
-
 //
 //        HttpClient cliente;
 //        HttpPost httppost;
@@ -454,34 +447,40 @@ public class listAdapter extends BaseAdapter {
 
         } // end while
         c.close();
+        HttpURLConnection clienteURL = null;
+        try {
+            clienteURL = (HttpURLConnection) url.openConnection();
+            clienteURL.setDoOutput(true);
+            clienteURL.setFixedLengthStreamingMode(jsString.length());
+            clienteURL.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 
-
-        OutputStreamWriter wr = new OutputStreamWriter(clienteURL.getOutputStream());
-        String valueto = "id="+jsString.toString();
-        Log.i(TAG,valueto);
-        wr.write(valueto);
-        wr.flush();
-//        parametros.add(new BasicNameValuePair("JSON",jsString));
+            OutputStreamWriter wr = new OutputStreamWriter(clienteURL.getOutputStream());
+            String valueto = "id=" + URLEncoder.encode(jsString, "UTF-8");
+            Log.i(TAG, valueto);
+            wr.write(valueto);
+            wr.flush();
+            wr.close();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        finally{
+            if(clienteURL != null)
+                clienteURL.disconnect();
+        }
         Log.i("ADDED JSON SEND", jsString);
 
-//        try {
-//            jObjct.put("Main",jsString);
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
         if(status) {
-//            httppost.setEntity(new UrlEncodedFormEntity(parametros));
-//            respuesta = cliente.execute(httppost);
-            System.out.println(clienteURL.getResponseMessage());
-            int HTTPresp = clienteURL.getResponseCode();
-            Log.i("HTTP", HTTPresp + "");
 
-            if (HTTPresp == HttpURLConnection.HTTP_OK) {
-                Log.i(TAG, " RESPONSE OK");
-
-            } else {
-                Log.i(TAG, "No connected");
-            }
+//            System.out.println(clienteURL.getResponseMessage());
+//            int HTTPresp = clienteURL.getResponseCode();
+//            Log.i("HTTP", HTTPresp + "");
+//
+//            if (HTTPresp == HttpURLConnection.HTTP_OK) {
+//                Log.i(TAG, " RESPONSE OK");
+//
+//            } else {
+//                Log.i(TAG, "No connected");
+//            }
 
 //            switch( clienteURL.getResponseCode()){
 //                case 200:
@@ -509,7 +508,7 @@ public class listAdapter extends BaseAdapter {
 //            }
 
         }
-        clienteURL.disconnect();
+
         rcRes.close();
         rcCon.close();
         return flag;

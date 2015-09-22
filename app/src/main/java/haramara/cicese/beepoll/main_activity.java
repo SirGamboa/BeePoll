@@ -32,11 +32,11 @@ public class main_activity  extends AppCompatActivity{
     String TAG = "MainActivity";
 
     String TITLES[] = {"Encuestas","Borradores","Enviados","Bandeja de salida","Cerrar Sesión"};
-    int ICONS[] = {R.mipmap.ic_action_collection,
-            R.mipmap.ic_action_discard,
-            R.mipmap.ic_action_view_as_list,
-            R.mipmap.ic_action_send_now,
-            R.mipmap.ic_action_settings
+    int ICONS[] = {R.mipmap.bp_encuesta,
+            R.mipmap.bp_borrador,
+            R.mipmap.bp_enviados,
+            R.mipmap.bp_bandeja,
+            R.mipmap.bp_sesion
     };
 
     @Override

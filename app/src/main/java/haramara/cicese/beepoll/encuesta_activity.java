@@ -203,7 +203,7 @@ public class encuesta_activity extends AppCompatActivity{
             // Poner ícono del drawer toggle
 //            ab.setHomeButtonEnabled(true);
             ab.setDisplayHomeAsUpEnabled(true);
-            ab.setHomeAsUpIndicator(R.mipmap.ic_action_discard);
+            ab.setHomeAsUpIndicator(R.mipmap.ic_arrow_back_white_24dp);
             ab.setHomeButtonEnabled(true);
         }
     }

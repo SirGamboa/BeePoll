@@ -5,29 +5,29 @@
         <item
             android:id="@+id/navEncuestas"
             android:checked="true"
-            android:icon="@android:drawable/arrow_down_float"
+            android:icon="@mipmap/bp_encuesta"
             android:title="Encuestas" />
         <item
             android:id="@+id/navBorradores"
-            android:icon="@android:drawable/alert_light_frame"
+            android:icon="@mipmap/bp_borrador"
             android:title="Borradores" />
         <item
             android:id="@+id/navBandeja"
-            android:icon="@android:drawable/bottom_bar"
+            android:icon="@mipmap/bp_bandeja"
             android:title="Bandeja de Salida" />
         <item
             android:id="@+id/navEnviados"
-            android:icon="@android:drawable/bottom_bar"
+            android:icon="@mipmap/bp_enviados"
             android:title="Enviados" />
         <item
             android:id="@+id/navConfig"
             android:menuCategory="secondary"
-            android:icon="@android:drawable/bottom_bar"
+            android:icon="@mipmap/bp_ayuda"
             android:title="Configuración" />
         <item
             android:id="@+id/navSession"
             android:menuCategory="secondary"
-            android:icon="@android:drawable/bottom_bar"
+            android:icon="@mipmap/bp_sesion"
             android:title="Cerrar Sesión" />
 
     </group>

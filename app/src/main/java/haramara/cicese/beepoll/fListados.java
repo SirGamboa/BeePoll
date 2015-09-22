@@ -163,7 +163,7 @@ public class fListados extends Fragment {
             sFullName[i] = rcEnc.getName(idValues[1]);
             iDiscard[i] = R.mipmap.ic_action_discard;
             if(isWifiConn)
-                iSendNow[i] = R.mipmap.ic_action_send_now;
+                iSendNow[i] = R.mipmap.bp_send;
             else
                 iSendNow[i] = 0;
 
@@ -320,7 +320,7 @@ public class fListados extends Fragment {
             sDateSend[i] = "";
             iDraft[i] =  R.mipmap.ic_action_discard;
             iSendNow[i] = 0;
-            iEdit[i] = R.mipmap.ic_action_edit;
+            iEdit[i] = R.mipmap.bp_edit;
         }
         Log.i(TAGD,"Icons added");
 

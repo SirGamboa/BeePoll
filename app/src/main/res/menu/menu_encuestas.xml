@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
     <item
         android:id="@+id/action_sync"
-        android:icon="@drawable/ayuda_icon"
+        android:icon="@mipmap/ic_action_refresh"
         android:title="Sincronizar"
         app:showAsAction="ifRoom"
         />
