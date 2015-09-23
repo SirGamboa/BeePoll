@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/enc_ima_mul">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="222px"
+        android:id="@+id/pregunta"
+        android:layout_marginLeft="47px"
+        android:layout_marginRight="101px"
+        android:layout_centerVertical="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true">
+
+        <ImageView
+            android:layout_width="10px"
+            android:layout_height="fill_parent"
+            android:id="@+id/imageView5"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:background="#f8d421" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Medium Text"
+            android:id="@+id/textView"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/imageView5"
+            android:layout_marginLeft="20px"
+            android:editable="false" />
+
+    </RelativeLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/view"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/proyect_encuesta"
+        android:id="@+id/titleEncuesta"
+        android:paddingTop="25dp"
+        android:textColor="#3fc3ff"
+        android:textSize="25sp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:gravity="center_vertical"
+        android:layout_above="@+id/pregunta"
+        android:layout_alignStart="@+id/pregunta"
+        android:layout_alignEnd="@+id/pregunta"
+        android:layout_marginBottom="36px" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/editText"
+        android:layout_alignParentBottom="true"
+        android:layout_alignEnd="@+id/titleEncuesta"
+        android:layout_alignStart="@+id/pregunta"
+        android:layout_marginBottom="23px" />
+</RelativeLayout>
