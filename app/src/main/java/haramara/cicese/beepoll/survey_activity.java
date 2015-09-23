@@ -548,12 +548,13 @@ public class survey_activity extends AppCompatActivity {
     private void endView(int info) {
         Intent dataResult = new Intent();
         dataResult.putExtra("Return", info);
+        dataResult.putExtra("clave",ab.getTitle().toString());
         switch(info){
             default:
-                setResult(RESULT_OK);
+                setResult(RESULT_OK,dataResult);
                 break;
             case 1:
-                setResult(88);
+                setResult(88,dataResult);
                 break;
         }
         rcPreg.close();

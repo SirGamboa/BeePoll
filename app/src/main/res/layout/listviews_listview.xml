@@ -15,26 +15,26 @@
  />
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:state_focused="true"
         android:id="@+id/erase_btn"
         android:src="@mipmap/ic_action_discard"
+        android:layout_alignTop="@+id/nombre_encuestado"
         android:visibility="invisible"
         tools:ignore="ContentDescription"
-        android:layout_alignTop="@+id/erase_draft"
         android:layout_alignStart="@+id/erase_draft" />
     <ImageView
-        android:layout_width="wrap_content"
+        android:layout_width="40dp"
         android:layout_height="40dp"
         android:state_focused="true"
         android:id="@+id/erase_draft"
         android:src="@mipmap/ic_action_discard"
         android:visibility="invisible"
         tools:ignore="ContentDescription"
-        android:layout_alignTop="@+id/continue_btn"
-        android:layout_toStartOf="@+id/continue_btn"
-        android:layout_marginEnd="52dp" />
+        android:layout_marginEnd="37dp"
+        android:layout_alignTop="@+id/nombre_encuestado"
+        android:layout_toStartOf="@+id/continue_btn" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -82,8 +82,8 @@
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="45dp" />
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_marginRight="26dp"
         android:state_focused="true"
         android:id="@+id/continue_btn"
@@ -95,8 +95,8 @@
         android:visibility="invisible"
         tools:ignore="ContentDescription" />
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_marginRight="26dp"
         android:state_focused="true"
         android:id="@+id/edit_btn"
@@ -114,8 +114,8 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/sendTextdate"
         android:id="@+id/tvDateSend"
-        android:layout_above="@+id/ultima_fecha"
-        android:layout_alignEnd="@+id/erase_btn"
-        android:visibility="visible" />
+        android:visibility="invisible"
+        android:layout_alignBottom="@+id/imageView"
+        android:layout_toStartOf="@+id/erase_btn" />
 
 </RelativeLayout>

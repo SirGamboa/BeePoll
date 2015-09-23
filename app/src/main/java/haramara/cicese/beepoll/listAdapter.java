@@ -21,6 +21,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -46,9 +50,10 @@ public class listAdapter extends BaseAdapter {
     private int[] imageEdit;
     private int[] imageSend;
     private int[] imageDraft;
-    private final String wsPost = "http://idi.cicese.mx/surbeeweb/webService/ws.php";
+//    private final String wsPost = "http://idi.cicese.mx/surbeeweb/webService/ws.php";
 //    String wsPost = "http://idi.cicese.mx/surbeeweb-ut3/webService/ws.php";
 //    String wsPost = "http://idi.cicese.mx/surbeeweb-demo/webService/ws.php";
+    private final String wsPost = "http://10.0.2.2/html/surbee/webService/ws.php";
 
 
     private final int REQUEST_CODE = 0;
@@ -251,22 +256,22 @@ public class listAdapter extends BaseAdapter {
                 //metodo enviar
                 Log.i(TAG,"SEND DATA");
 
-//                try {
-//                    if (sendData(sTitles[position], Integer.valueOf(sEncId[position]))) {
-//                        sTitles[position] = "";
-//                        sSubTitles[position] = "";//+ dateSend.toString();
-//                        imageTrash[position] = 0;
-//                        imageEdit[position] = 0;
-//                        imageDraft[position] = 0;
-//                        imageSend[position] = 0;
-//                        sdate[position] = ""; //shhmmss.toString();
-//                        updateResults(sTitles, sEncId, sSubTitles, sdate, imageTrash, imageDraft, imageSend, imageEdit);
-//                    }
-//
-//                    updateList(position, v, parent);
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
+                try {
+                    if (sendData(sTitles[position], Integer.valueOf(sEncId[position]))) {
+                        sTitles[position] = "";
+                        sSubTitles[position] = "";//+ dateSend.toString();
+                        imageTrash[position] = 0;
+                        imageEdit[position] = 0;
+                        imageDraft[position] = 0;
+                        imageSend[position] = 0;
+                        sdate[position] = ""; //shhmmss.toString();
+                        updateResults(sTitles, sEncId, sSubTitles, sdate, sDateSended, imageTrash, imageDraft, imageSend, imageEdit);
+                    }
+
+                    updateList(position, v, parent);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
             }
         });
@@ -354,17 +359,22 @@ public class listAdapter extends BaseAdapter {
     private void updateList(int position,View view, ViewGroup parent ) {
         @SuppressWarnings("UnusedAssignment") View v = getView(position, view, parent);
     }
-/*
+
     public boolean sendData(String sTitle, int idEnc)throws IOException {
         @SuppressWarnings("UnusedAssignment")
+
         boolean flag = false;
-        HttpClient cliente;
-        HttpPost httppost;
-        HttpResponse respuesta;
+        //--- http URL Connection
+        URL url = new URL(wsPost);
+        Log.i(TAG, url.toString());
+//
+//        HttpClient cliente;
+//        HttpPost httppost;
+//        HttpResponse respuesta;
 //        @SuppressWarnings("UnusedAssignment") InputStream is;
         String jsString ="";
 //        String idEdor;
-        List<NameValuePair> parametros = new ArrayList<>();
+//        List<NameValuePair> parametros = new ArrayList<>();
         StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().permitNetwork().build());
         rcRespuestas rcRes;
         rcConfig rcCon;
@@ -383,9 +393,9 @@ public class listAdapter extends BaseAdapter {
         }
 
         boolean status = false;
-        cliente = new DefaultHttpClient();
-        // http://idi.cicese.mx/surbeeweb/
-        httppost = new HttpPost(wsPost); //data.php | check
+//        cliente = new DefaultHttpClient();
+//        // http://idi.cicese.mx/surbeeweb/
+//        httppost = new HttpPost(wsPost); //data.php | check
 //        httppost = new HttpPost("http://idi.cicese.mx/surbeeweb-ut3/webService/ws.php"); //data.php | check
 //        httppost = new HttpPost("http://idi.cicese.mx/surbeeweb-demo/webService/ws.php"); //data.php | check
         String id_Enc, id_Preg, id_Endo, resp, idPregTipo, dataEdo, idVal;
@@ -397,7 +407,7 @@ public class listAdapter extends BaseAdapter {
         JSONObject object = new JSONObject();
         JSONObject jObjct = new JSONObject();
         c.moveToFirst();
-        StringEntity se = null;
+//        StringEntity se = null;
 
         while(!c.isAfterLast()){
             id_Endo = c.getString(0);
@@ -424,60 +434,85 @@ public class listAdapter extends BaseAdapter {
                 if(!c.isLast()) {
                     jsString = jsString.concat("-");
                 }
-                se = new StringEntity(jsString);
+//                se = new StringEntity(jsString);
 
             } catch (JSONException e) {
                 e.printStackTrace();
             }
             System.out.println(object);
-            System.out.println(se);
-            Log.i("SE JSON", String.valueOf(se));
+//            System.out.println(se);
+            Log.i("SE JSON", String.valueOf(jsString));
             status = true;
             c.moveToNext();
 
         } // end while
         c.close();
-        parametros.add(new BasicNameValuePair("JSON",jsString));
-        Log.i("ADDED JSON SEND",jsString);
-
+        HttpURLConnection clienteURL = null;
         try {
-            jObjct.put("Main",jsString);
-        } catch (JSONException e) {
+            clienteURL = (HttpURLConnection) url.openConnection();
+            clienteURL.setDoOutput(true);
+            clienteURL.setFixedLengthStreamingMode(jsString.length());
+            clienteURL.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+
+            OutputStreamWriter wr = new OutputStreamWriter(clienteURL.getOutputStream());
+            String valueto = "id=" + URLEncoder.encode(jsString, "UTF-8");
+            Log.i(TAG, valueto);
+            wr.write(valueto);
+            wr.flush();
+            wr.close();
+        }catch (IOException e){
             e.printStackTrace();
         }
-        if(status && (se != null ? se.getContentLength() : 0) >0){
-            httppost.setEntity(new UrlEncodedFormEntity(parametros));
-            respuesta = cliente.execute(httppost);
-            Log.i("HTTP", respuesta.getStatusLine().toString());
-            switch( respuesta.getStatusLine().getStatusCode()){
-                case 200:
-                    Log.i("HTTPOK","200");
-                    flag = true ;
-                    if(rcRes.status(sTitle, idEnc)) {
-
-                        delete(sTitle, idEnc, true);
-                        updated = 1;
-                    }
-                    Log.i(TAG,"Actualizado "+updated);
-                    int l = rcDEnc.readNumSend(idEnc, Integer.valueOf(Cid));
-                    l++;
-                    rcDEnc.updateNumSend(l, idEnc, Cid);
-                    //Toast.makeText(context,"Encuesta:  "+sTitle+" Enviada",Toast.LENGTH_SHORT).show();
-                    break;
-                case 404:
-                    Log.i("HTTP","404 Not Found (HTTP/1.0 - RFC 1945)");
-                    flag = false;
-                    break;
-                case 500:
-                    Toast.makeText(context,"ERROR 500, error en el Servidor", Toast.LENGTH_LONG).show();
-                    flag = false;
-                    break;
-            }
+        finally{
+            if(clienteURL != null)
+                clienteURL.disconnect();
         }
+        Log.i("ADDED JSON SEND", jsString);
+
+        if(status) {
+
+//            System.out.println(clienteURL.getResponseMessage());
+//            int HTTPresp = clienteURL.getResponseCode();
+//            Log.i("HTTP", HTTPresp + "");
+//
+//            if (HTTPresp == HttpURLConnection.HTTP_OK) {
+//                Log.i(TAG, " RESPONSE OK");
+//
+//            } else {
+//                Log.i(TAG, "No connected");
+//            }
+
+//            switch( clienteURL.getResponseCode()){
+//                case 200:
+//                    Log.i("HTTPOK","200");
+//                    flag = true ;
+//                    if(rcRes.status(sTitle, idEnc)) {
+//
+////                        delete(sTitle, idEnc, true);
+//                        updated = 1;
+//                    }
+//                    Log.i(TAG,"Actualizado "+updated);
+////                    int l = rcDEnc.readNumSend(idEnc, Integer.valueOf(Cid));
+////                    l++;
+////                    rcDEnc.updateNumSend(l, idEnc, Cid);
+//                    Toast.makeText(context,"Encuesta:  "+sTitle+" Enviada",Toast.LENGTH_SHORT).show();
+//                    break;
+//                case 404:
+//                    Log.i("HTTP","404 Not Found (HTTP/1.0 - RFC 1945)");
+//                    flag = false;
+//                    break;
+//                case 500:
+//                    Toast.makeText(context,"ERROR 500, error en el Servidor", Toast.LENGTH_LONG).show();
+//                    flag = false;
+//                    break;
+//            }
+
+        }
+
         rcRes.close();
         rcCon.close();
         return flag;
     }
-*/
+
 
 }
