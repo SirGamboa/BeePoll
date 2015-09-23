@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,7 +39,7 @@ import haramara.cicese.beepoll.db.rcEncuestado;
 public class encuestado_activity extends AppCompatActivity{
     private dbEncuestado database;
     private rcEncuestado rcEnc;
-    private LinearLayout ll;
+    private RelativeLayout ll;
     private int dUser = 0;
     private int s=-1;
     private final String TAG = "AddENCUESTADO";
@@ -68,7 +69,7 @@ public class encuestado_activity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         //----- variables y declaraciones
         setContentView(R.layout.encuestado_layout);
-        ll = (LinearLayout) findViewById(R.id.create_user_content);
+        ll = (RelativeLayout) findViewById(R.id.create_user_content);
         setToolbar();
         Intent i = getIntent();
         dUser = i.getExtras().getInt("edo");
@@ -225,9 +226,9 @@ public class encuestado_activity extends AppCompatActivity{
         String shhmmss = tm.toString().substring(9,15);
         ll.removeAllViews();
 
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT)
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT)
                 ;
 
         String Text="Favor de ingresar los datos que se piden.";
