@@ -129,6 +129,10 @@ public class main_activity  extends AppCompatActivity{
             flag = true;
             frg = "haramara.cicese.beepoll.fLogoff";
         }
+        if(title.contentEquals("Ayuda")){
+            flag = true;
+            frg = "haramara.cicese.beepoll.fayuda";
+        }
         if(title.contentEquals("Cerrar Sesión")){
             flag = true;
             frg = "haramara.cicese.beepoll.fLogoff";

@@ -443,28 +443,7 @@ int i= 1;
             // agregar Datos del encuestado.
             dataEdo = "dataEdo=nodata";//+rcEdo.getData(id_Endo);
 
-            SendData = id_Enc+"&"+idPregTipo+"&"+id_Endo+"&"+id_Preg+"&"+resp+"&"+idVal+"&"+dataEdo;
-
-//
-//            try {
-//                object.put("idEdo", id_Endo);
-//                object.put("idPregTipo",idPregTipo);
-//                object.put("idEnc", id_Enc);
-//                object.put("idPreg", id_Preg);
-//                object.put("idVal", idVal);
-//                object.put("Resp", resp);
-//                object.put("dataEdo", dataEdo);
-//                object.put("IDUSER", Cid);
-//
-//                jsString = jsString.concat(object.toString());
-//                if(!c.isLast()) {
-//                    jsString = jsString.concat("-");
-//                }
-//                se = new StringEntity(jsString);
-
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
+            SendData = "?"+id_Enc+"&"+idPregTipo+"&"+id_Endo+"&"+id_Preg+"&"+resp+"&"+idVal+"&"+dataEdo;
             System.out.println(SendData);
 //            System.out.println(se);
             Log.i("SE JSON", String.valueOf(SendData));
@@ -501,12 +480,25 @@ int i= 1;
 //            e.printStackTrace();
 //        }
 //        finally{
+        if(status) {
+            switch (clienteURL.getResponseCode()){
+                case HttpURLConnection.HTTP_ACCEPTED:
+                    Log.i(TAG,"ACEPTED");
+                    break;
+                case HttpURLConnection.HTTP_OK:
+                    Log.i(TAG,"OK");
+                    break;
+                default:
+                    Log.i(TAG,clienteURL.getResponseMessage());
+                    break;
+
+            }
             if(clienteURL != null)
                 clienteURL.disconnect();
 //        }
         Log.i("ADDED JSON SEND", jsString);
 
-//        if(status) {
+
 
 //            System.out.println(clienteURL.getResponseMessage());
 //            int HTTPresp = clienteURL.getResponseCode();
@@ -544,7 +536,7 @@ int i= 1;
 //                    break;
 //            }
 
-//        }
+        }
 
         rcRes.close();
         rcCon.close();

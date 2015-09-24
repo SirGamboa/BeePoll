@@ -25,6 +25,11 @@
             android:icon="@mipmap/bp_ayuda"
             android:title="Configuración" />
         <item
+            android:id="@+id/navAyuda"
+            android:menuCategory="secondary"
+            android:icon="@mipmap/bp_ayuda"
+            android:title="Ayuda" />
+        <item
             android:id="@+id/navSession"
             android:menuCategory="secondary"
             android:icon="@mipmap/bp_sesion"

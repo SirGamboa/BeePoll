@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary" />
+
+    <ImageView
+        android:layout_width="10dp"
+        android:layout_height="fill_parent"
+        android:id="@+id/imageView4"
+        android:background="#ffe05f"
+        android:contentDescription="@string/bar"
+        android:visibility="visible"
+        android:layout_alignBottom="@+id/RLAdd"
+        android:layout_alignTop="@+id/RLAdd"
+        android:layout_alignStart="@+id/RLAdd" />
+
+    <TableLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/RLAdd"
+        android:layout_marginLeft="145dp"
+        android:layout_marginRight="145dp"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true">
+
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            >
+            <EditText
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:layout_margin="20dp"
+                android:hint="@string/Nombres"
+                android:ems="10"
+                android:id="@+id/nom"
+                android:background="#aabbcc"
+                />
+
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:layout_margin="20dp"
+                android:hint="@string/Apellidos"
+                android:ems="10"
+                android:id="@+id/ape"
+                android:layout_marginLeft="22dp"
+                android:background="#ebeef0"
+                />
+        </TableRow>
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <EditText
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:layout_margin="20dp"
+                android:hint="@string/edoCivil"
+                android:ems="10"
+                android:id="@+id/EstadoCivil"
+                android:background="#ebeef0"  />
+
+            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:hint="@string/FechaEdo"
+                android:ems="10"
+                android:id="@+id/btDate"
+                android:layout_marginLeft="22dp"
+                android:background="#3fc3ff" />
+
+        </TableRow>
+        <TableRow
+
+            >
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/rg_label"
+                android:baselineAligned="false"
+                android:orientation="horizontal"
+                android:layout_gravity="right"
+                android:layout_marginLeft="20dp">
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/hombre"
+                    android:id="@+id/masc"
+                    android:checked="false"  />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mujer"
+                    android:id="@+id/fem"
+                    android:checked="false"
+                    />
+            </RadioGroup>
+        </TableRow>
+
+
+    </TableLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/btFAB"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_margin="15dp"
+        android:layout_gravity="left|bottom"
+        android:src="@mipmap/ic_action_next_item"
+        app:elevation="6dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="26dp" />
+
+</RelativeLayout>
