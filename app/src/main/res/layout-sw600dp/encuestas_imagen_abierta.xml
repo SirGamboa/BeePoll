@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:id="@+id/enc_ima_mul">
 
+
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -28,22 +29,22 @@
         android:layout_centerHorizontal="true">
 
 
-                <ImageView
-                android:layout_width="200dp"
-                android:layout_height="200dp"
-                android:id="@+id/imgEnc"
-                android:background="#aabbff"
-                    android:layout_centerVertical="true"
-                    android:layout_alignParentStart="true"
-                    android:paddingRight="11dp" />
+        <ImageView
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:id="@+id/imgEnc"
+            android:background="#aabbff"
+            android:layout_centerVertical="true"
+            android:layout_alignParentStart="true"
+            android:paddingRight="11dp" />
 
-                <TextView
-                    android:id="@+id/tvPreg"
-                    android:layout_width="fill_parent"
-                    android:layout_height="100dp"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_toEndOf="@+id/imgEnc" />
+        <TextView
+            android:id="@+id/tvPreg"
+            android:layout_width="fill_parent"
+            android:layout_height="100dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_toEndOf="@+id/imgEnc" />
 
         <EditText
             android:layout_width="wrap_content"
@@ -53,7 +54,8 @@
             android:layout_alignEnd="@+id/tvPreg"
             android:layout_toEndOf="@+id/imgEnc"
             android:background="#ebeef0"
-            android:inputType="text" />
+            android:inputType="text"
+            android:hint="Escriba su respuesta" />
 
         <ImageView
             android:layout_width="8dp"

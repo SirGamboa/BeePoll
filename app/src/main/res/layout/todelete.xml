@@ -13,11 +13,171 @@
         android:background="?attr/colorPrimary" />
 
 
-<TextView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="Texto aquí"
-    android:layout_centerVertical="true"
-    android:layout_centerHorizontal="true" />
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:weightSum="1"
+        android:background="@color/white">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@color/gris_titulo"
+            android:layout_weight="0">
+            <TextView
+                android:id="@+id/tvEncuestaName"
+                android:fontFamily="Roboto bold"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="47dp"
+                tools:ignore="UnusedAttribute" />
+        </TableRow>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/noID"
+            android:id="@+id/tvIDEdo"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:fontFamily="Roboto"
+            android:gravity="center_horizontal"
+            android:textColor="#3fc3ff"
+            android:textSize="14sp"
+            tools:ignore="UnusedAttribute" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/mText"
+            android:id="@+id/tvInstrucciones"
+            android:layout_marginLeft="50dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="50dp"
+            android:fontFamily="Roboto"
+            android:textSize="16sp"
+            tools:ignore="UnusedAttribute"
+            android:layout_weight="0.15" />
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/respuesta_opcional"
+            android:textColor="@color/black"
+            android:orientation="horizontal"
+            android:layout_marginTop="38dp"
+            android:layout_weight="0.15"
+            android:showDividers="middle"
+            android:textAlignment="textStart"
+            android:layout_gravity="center"
+            android:gravity="center_vertical"
+            tools:ignore="UnusedAttribute" />
+
+        <RelativeLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:showDividers="middle"
+            android:textAlignment="textStart"
+            android:id="@+id/llQuest"
+            android:layout_weight="0.12"
+            tools:ignore="UnusedAttribute">
+            <!-- aqui van los respuestas u opciones multiples -->
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/etResp"
+                android:textColor="@color/black"
+                android:orientation="horizontal"
+                android:showDividers="middle"
+                android:textAlignment="center"
+                android:theme="@style/AppTheme"
+                android:textColorHint="@color/black"
+                android:hint="@string/resp"
+                android:gravity="center"
+                tools:ignore="UnusedAttribute"
+                android:inputType="textImeMultiLine" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/etOpcs"
+            android:textColor="@color/black"
+            android:orientation="horizontal"
+            android:showDividers="middle"
+            android:textAlignment="textStart"
+            android:theme="@style/AppTheme"
+            android:textColorHint="@color/black"
+            android:gravity="left"
+            android:layout_below="@+id/etResp"
+            android:visibility="visible"
+            android:layout_weight="0"
+            android:layout_gravity="left"
+            android:paddingLeft="15dp"
+            tools:ignore="ObsoleteLayoutParam,UnusedAttribute" />
+        <!-- SPACE -->
+
+
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/llBtns">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/prev"
+            android:text="@string/REGRESAR"
+            android:background="@color/white"
+            android:textColor="@color/surbee_blue"
+            android:textSize="20sp"
+            android:layout_weight=".5" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/next"
+            android:text="@string/comenzar"
+            android:background="@color/white"
+            android:textColor="@color/surbee_blue"
+            android:textSize="20sp"
+            android:layout_weight=".5" />
+    </LinearLayout>
+
 
 </RelativeLayout>
+<!--
+  <ViewStub
+        android:id="@+id/picturesPregs"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout="@layout/encuestas_imagen_abierta"
+    />
+    <ViewStub
+        android:id="@+id/openPregs"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout="@layout/encuestas_abierta"
+        />
+    <ViewStub
+        android:id="@+id/optionsPreg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout="@layout/encuestas_multiple"
+        />
+    <ViewStub
+        android:id="@+id/optionsPicturesPregs"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout="@layout/encuestas_imagen_multiple"
+        />
+-->

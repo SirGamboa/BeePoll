@@ -1,18 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/enc_ima_mul">
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/desc_encuesta"
-        android:id="@+id/titleEncuesta"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:gravity="center"
-        android:textColor="#3fc3ff" />
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -32,17 +25,19 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content">
             <ImageView
-                android:layout_width="10dp"
-                android:layout_height="fill_parent"
-                android:id="@+id/imageView4"
-                android:background="#ffe05f"
-                android:contentDescription="@string/bar"
-                android:visibility="visible" />
+            android:layout_width="10dp"
+            android:layout_height="fill_parent"
+            android:id="@+id/imageView4"
+            android:background="#ffe05f"
+            android:contentDescription="@string/bar"
+            android:visibility="visible"
+            android:layout_alignBottom="@+id/RLAdd"
+            android:layout_alignTop="@+id/RLAdd"
+            android:layout_alignStart="@+id/RLAdd" />
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
-                android:hint="@string/Nombres"
                 android:ems="10"
                 android:id="@+id/tvPreg" />
 
@@ -50,14 +45,18 @@
         <TableRow
             android:layout_width="fill_parent"
             android:layout_height="wrap_content">
-            <RadioGroup
+            <EditText
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
-                android:id="@+id/rgResp" />
+                android:hint="@string/resp"
+                android:ems="10"
+                android:id="@+id/etResp"
+                android:background="#ebeef0"  />
 
         </TableRow>
 
     </LinearLayout>
+
 
 </RelativeLayout>

@@ -16,7 +16,7 @@
         android:layout_width="96dp"
         android:layout_height="92dp"
         android:id="@+id/imageView2"
-        android:src="@mipmap/rodo"
+        android:src="@mipmap/surbee_72"
         android:layout_gravity="left|top"
         android:paddingLeft="16dp"
         android:contentDescription="@string/contenido" />
@@ -32,7 +32,7 @@
         android:layout_below="@+id/imageView2"
         android:layout_alignParentStart="true" />
     <TextView
-        android:id="@+id/email"
+        android:id="@+id/emailHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="email here"

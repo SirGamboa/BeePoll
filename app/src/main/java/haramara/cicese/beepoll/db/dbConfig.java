@@ -12,9 +12,11 @@ public class dbConfig  extends SQLiteOpenHelper{
     public static final String TABLE_NAME = "survey_configuracion";
     public static final String COLUMN_NAME_ID ="id";
     public static final String COLUMN_NAME_USUARIO ="usuario";
+    public static final String COLUMN_NAME_NOMBRE ="nombre";
     private static final String COLUMN_NAME_ENCUESTADO_ID ="encuestado_id";
     private static final String DATABASE_NAME ="DRSurbee.db"; //nombre de la base de datos local
     private static final int DATABASE_VERSION = 1;
+    String TAG = "DBConfig";
     public static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + dbEncuestado.TABLE_NAME;
 	/*   crea la tabla en el dispositivo con los campos específicos.  */
@@ -25,21 +27,25 @@ public class dbConfig  extends SQLiteOpenHelper{
             + " text primary key, "
             + COLUMN_NAME_USUARIO
             + " text, "
+            + COLUMN_NAME_NOMBRE
+            + " text, "
             + COLUMN_NAME_ENCUESTADO_ID
             + " text "
             + "); ";
 
-    public  static final  String SQL_CREATE_DATA =
-            "INSERT INTO " + TABLE_NAME + " (" +
-                    COLUMN_NAME_ID + ", " +
-                    COLUMN_NAME_USUARIO + ", " +
-                    COLUMN_NAME_ENCUESTADO_ID +
-                    " ) " +
-                    "VALUES (" +
-                    "0, " +
-                    "'', " +
-                    "-1" +
-                    " )";
+//    public  static final  String SQL_CREATE_DATA =
+//            "INSERT INTO " + TABLE_NAME + " (" +
+//                    COLUMN_NAME_ID + ", " +
+//                    COLUMN_NAME_USUARIO + ", " +
+//                    COLUMN_NAME_NOMBRE + " , " +
+//                    COLUMN_NAME_ENCUESTADO_ID +
+//                    " ) " +
+//                    "VALUES (" +
+//                    "0, " +
+//                    "'', " +
+//                    "'', " +
+//                    "-1" +
+//                    " )";
     public dbConfig(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -49,16 +55,24 @@ public class dbConfig  extends SQLiteOpenHelper{
 
         // TODO Auto-generated method stub
         db.execSQL(DATABASE_CREATE); // corre el query de la creación de la base de datos.
+        Log.i(TAG, DATABASE_CREATE);
         db.execSQL(dbEncuestas.DATABASE_CREATE);
+        Log.i(TAG, dbEncuestas.DATABASE_CREATE);
         db.execSQL(dbPreguntas.DATABASE_CREATE);
+        Log.i(TAG, dbPreguntas.DATABASE_CREATE);
         db.execSQL(dbOpciones.DATABASE_CREATE);
+        Log.i(TAG, dbOpciones.DATABASE_CREATE);
         db.execSQL(dbEncuestado.DATABASE_CREATE);
+        Log.i(TAG, dbEncuestado.DATABASE_CREATE);
         db.execSQL(dbRespuestas.DATABASE_CREATE);
+        Log.i(TAG, dbRespuestas.DATABASE_CREATE);
         db.execSQL(dbCompleted.DATABASE_CREATE);
+        Log.i(TAG, dbCompleted.DATABASE_CREATE);
         db.execSQL(dbDataEnc.DATABASE_CREATE);
+        Log.i(TAG, dbDataEnc.DATABASE_CREATE);
         db.execSQL(dbRelacion.DATABASE_CREATE);
+        Log.i(TAG, dbRelacion.DATABASE_CREATE);
         db.execSQL("PRAGMA encoding = \"UTF-16\"");
-        String TAG = "DBConfig";
         Log.i(TAG, "DBCreated");
     }
 

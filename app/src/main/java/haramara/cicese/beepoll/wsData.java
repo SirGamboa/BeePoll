@@ -2,9 +2,13 @@ package haramara.cicese.beepoll;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.StrictMode;
 import android.text.Html;
+import android.util.JsonReader;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -12,7 +16,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -51,6 +58,7 @@ private static final String TAG_PREG_DESC   = "descripcion";
 private static final String TAG_PREG_TIPO   = "tipo";
 private static final String TAG_PREG_PESO   = "peso";
 private static final String TAG_PREG_VAL    ="preg_valoracion";
+private static final String TAG_PREG_IMAGE    ="idImage";
 private static final String TAG_RESP        = "respuestas";
 private static final String TAG_RESP_ID     = "id";
 private static final String TAG_RESP_PREG   = "pregunta_id";
@@ -64,7 +72,11 @@ private dbPreguntas dbPreg;
 private dbOpciones dbOpc;
 private rcConfig rcCon;
 //private dbRelacion dbRel;
+String[] aPhotos;
+private final String addrs = "http://idi.cicese.mx/surbeeweb/uploads/pregunta/";
+private final String path = "/mnt/sdcard/beepoll/images/";
 private static final String targetURL = "http://idi.cicese.mx/surbeeweb/webService/";
+File directory;
 //    targetURL = "http://idi.cicese.mx/surbeeweb-ut3/webService/";
 //    static final String targetURL = "http://idi.cicese.mx/surbeeweb-demo/webService/";
 private rcRelacion rcRel;
@@ -140,6 +152,7 @@ private final String TAG = "WSSearch";
 
     public boolean readUserWS(String user, Context context) throws IOException{
         @SuppressWarnings("UnusedAssignment") boolean returnValue = false;
+        String[] name_mail = new String[]{"Email","Name"};
 
         String targetURLrUser;
         StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().permitNetwork().build());
@@ -169,7 +182,8 @@ private final String TAG = "WSSearch";
                     //noinspection ConstantConditions
                     if (br != null){
                         String payload = br.readLine(); // add localdb
-                        if(Integer.valueOf(payload) > 0){
+                        name_mail = payload.split(":");
+                        if(Integer.valueOf(name_mail[0]) > 0){
                             rcCon = new rcConfig(context);
                             try {
                                 rcCon.open();
@@ -177,7 +191,9 @@ private final String TAG = "WSSearch";
                                 e.printStackTrace();
                             }
                             ContentValues cv = new ContentValues();
-                            cv.put("ID", payload);
+//                            name_mail = payload.split(":");
+                            cv.put("ID", name_mail[0]);
+                            cv.put("NAME",name_mail[1]);
                             cv.put("USER", user);
                             if(rcCon.addUser(cv)) returnValue = true;
                             rcCon.close();
@@ -237,7 +253,7 @@ private final String TAG = "WSSearch";
                 br.close();
 //                Log.i(TAG, "Antes de JSON");
                 String id , nombre , desc , inst , etiq , encuestado , preguntas , PregVal, IDVal;
-                String PregID , PregEnc , PregDesc , PregTipo , edor , PregPeso, RespVal ;
+                String PregID , PregEnc , PregDesc , PregTipo , edor , PregPeso, RespVal , PregIMAGE;
                 String RespID , RespPreg , RespDesc , RespPeso , RespIDEnc , pregunta = null;
                 String UserMail ; int PregidPregTipo ;
                 rcCon = new rcConfig(context);
@@ -311,6 +327,11 @@ private final String TAG = "WSSearch";
                             IDVal = jsObj.getString(TAG_PREG_IDVAL);
                             PregEnc = jsObj.getString(TAG_PREG_ENC);
                             PregDesc = jsObj.getString(TAG_PREG_DESC);
+                            if(jsObj.getString(TAG_PREG_IMAGE) != null){
+                                PregIMAGE = jsObj.getString(TAG_PREG_IMAGE);
+                                cvPregs.put(dbPreg.COLUMN_NAME_IMAGE,PregIMAGE);
+                            }
+
                             if (jsObj.getString(TAG_PREG_IDPREGTIPO) != null){
                                 PregidPregTipo = jsObj.getInt(TAG_PREG_IDPREGTIPO);
                                 cvPregs.put(dbPreg.COLUMN_NAME_IDPREGTIPO,PregidPregTipo);
@@ -329,6 +350,7 @@ private final String TAG = "WSSearch";
                             cvPregs.put(dbPreg.COLUMN_NAME_PREGVAL, PregVal);
 //                            }
                             cvPregs.put(dbPreg.COLUMN_NAME_TIPO, PregTipo);
+//                            cvPregs.put(dbPreg.COLUMN_NAME_IMAGE, PregIMAGE);
 //                            Log.i("CV Preguntas ->",cvPregs.toString());
                             if( !rcPreg.checkPreguntas(cvPregs)  )
                                 rcPreg.addPreguntas(cvPregs);
@@ -383,11 +405,68 @@ private final String TAG = "WSSearch";
                 con.disconnect();
             }
         }
+        //---- Load Image
 
         rcEnc.close();
         rcPreg.close();
         rcOpc.close();
+
         return succx;
+
+    }
+
+    public void loadImage(Context context) throws IOException, SQLException {
+        int response;
+        URL url = null;
+        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().permitNetwork().build());
+        HttpURLConnection con = null;
+        int j = 0;// aPhotos.length;
+        rcPreguntas rcPregimage = new rcPreguntas(context);
+        rcPregimage.open();
+        aPhotos = rcPregimage.getPhotos();
+        rcPregimage.close();
+        Log.i(TAG,aPhotos.length+" items");
+        while (j < aPhotos.length) {
+
+
+            url = new URL(addrs + aPhotos[j]);
+            Log.i(TAG, url.toString());
+            con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET");
+            response = con.getResponseCode();
+            switch (response) {
+                case 200:
+                    Log.i(TAG, "Cargando imagen");
+                    Bitmap bmp = null;
+                    BufferedInputStream bis = new BufferedInputStream(con.getInputStream());
+//                    Bitmap bitmap = BitmapFactory.decodeStream(bis);
+                    bmp = BitmapFactory.decodeStream(bis);
+                    ContextWrapper cw = new ContextWrapper(context);
+                    directory = cw.getDir("images",context.MODE_PRIVATE);
+                    File path = new File(directory,aPhotos[j]);
+                    FileOutputStream imageFile = new FileOutputStream(path);
+                    //openFileOutput(aPhotos[j], getApplicationContext().MODE_PRIVATE);
+                    bmp.compress(Bitmap.CompressFormat.JPEG, 100, imageFile);
+                    Log.i(TAG,"File saved :"+aPhotos[j]+ " on: "+path);
+                    imageFile.close();
+                    Toast.makeText(context,"File '"+aPhotos[j]+"' downloaded",Toast.LENGTH_SHORT).show();
+//                    if (bmp != null) {
+//                        try {
+//                            Log.i(TAG, bmp.toString());
+//                            iView.setImageBitmap(bmp);
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+//                    } else {
+//                        Log.i(TAG, "Error bitmap");
+//                    }
+                    //finish();
+                    break;
+                default:
+                    break;
+            }
+            j++;
+        }
 
     }
 }

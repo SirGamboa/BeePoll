@@ -2,7 +2,10 @@ package haramara.cicese.beepoll;
 
 import android.app.AlertDialog;
 import android.content.ContentValues;
+import android.content.ContextWrapper;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -17,8 +20,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -26,6 +30,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.sql.SQLException;
 
 import haramara.cicese.beepoll.db.dbPreguntas;
@@ -44,8 +51,8 @@ import haramara.cicese.beepoll.db.rcRespuestas;
 public class survey_activity extends AppCompatActivity {
     // para cargar dinámicamente los reactivos y opciones a responder
     private RelativeLayout llQ;
+    private LinearLayout noImgRL;
     private RadioGroup rgResp;
-    private ViewGroup vgResp;
     private final String[] sborrador = new String[]{"0","0","0","0","0"};
     private String   id_Encuestado;
     private String idEncuestador;
@@ -58,6 +65,7 @@ public class survey_activity extends AppCompatActivity {
     private int id_encuesta=0;
     private int tipo=0;
     private int idPregTipo=0;
+    private rcEncuestas rcEnc;
     private rcPreguntas rcPreg;
     private rcRespuestas rcResp;
     private rcCompleted rcCom;
@@ -65,6 +73,7 @@ public class survey_activity extends AppCompatActivity {
     private rcDataEnc rcDEnc;
     private ContentValues cvPregs;
     private dbPreguntas dbPregs;
+    private File directory;
     private final String TAG = this.getClass().getName();
     private boolean TAG_FirstTime = true;
     private boolean borradores = false;
@@ -73,11 +82,16 @@ public class survey_activity extends AppCompatActivity {
     private ActionBar ab;
     Toolbar toolbar;
     private FloatingActionButton bNext;
-    private TextView tvIns;
+    private EditText etRespuesta;
+    private TextView tvPregunta;
     private TextView tvOpcs;
+    private RadioGroup rgOpciones;
+    ImageView ivPregs;
+    View inflate;
 
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.survey_layout);
 //        add name to Toolbar
         setToolbar();
@@ -89,14 +103,13 @@ public class survey_activity extends AppCompatActivity {
         rcConfig rcCon = new rcConfig(this);
         rcOpc = new rcOpciones(this);
         rcDEnc = new rcDataEnc(this);
-//        ContentValues cv = new ContentValues();
         cvPregs = new ContentValues();
-        TextView tvID = (TextView) findViewById(R.id.tvIDEdo); // en titulo del toolbar
-        TextView tvEName = (TextView) findViewById(R.id.tvIDEdo);
-        tvIns = (TextView) findViewById(R.id.tvInstrucciones);
-        tvOpcs = (TextView) findViewById(R.id.etOpcs);
+        TextView tvID = (TextView) findViewById(R.id.tvPreg);
+        TextView tvEName = (TextView) findViewById(R.id.titleEncuesta);
+        noImgRL = (LinearLayout) findViewById(R.id.RLAdd);
         llQ = (RelativeLayout) findViewById(R.id.llQuest);
-        rgResp = (RadioGroup) findViewById(R.id.respuesta_opcional);
+        rgResp = (RadioGroup) findViewById(R.id.rgResp);
+        ivPregs = (ImageView) findViewById(R.id.ivPregunta);
         try {
             rcPreg.open();
             rcResp.open();
@@ -108,6 +121,7 @@ public class survey_activity extends AppCompatActivity {
             e.printStackTrace();
         }
         bNext = (FloatingActionButton) findViewById(R.id.btFAB);
+
 
         /* Recibe datos de las vistas que mandan a llamar a surveyActivity
         * Viene de Borradores
@@ -155,7 +169,7 @@ public class survey_activity extends AppCompatActivity {
         if(TAG_FirstTime){
             //checar si ya respondió la encuesta
             if(rcCom.Checkdraft(id_Encuestado, id_encuesta, idEncuestador) && !borradores){
-                Toast.makeText(getApplicationContext(), "El usuario : " + id_Encuestado + " tiene una encuesta en Borradores ", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "El usuario : "+id_Encuestado+" tiene una encuesta en Borradores ", Toast.LENGTH_SHORT).show();
                 finish();
             }
             if( rcResp.check(id_Encuestado, id_encuesta, tlPreguntas)){
@@ -167,10 +181,10 @@ public class survey_activity extends AppCompatActivity {
             cvPregs = rcPreg.readPreguntas(id_encuesta, loop);
             if(cvPregs.getAsString("descripcion").isEmpty())
             {
-                tvIns.setText(Html.fromHtml("Sin descripción"));
+//                tvIns.setText(Html.fromHtml("Sin descripción"));
             }else
-                tvIns.setText(Html.fromHtml(cvPregs.getAsString("descripcion")));
-            // Log.i(TAG, String.valueOf(Html.fromHtml(cvPregs.getAsString("descripcion"))));
+//                tvIns.setText(Html.fromHtml(cvPregs.getAsString("descripcion")));
+             Log.i(TAG, String.valueOf(Html.fromHtml(cvPregs.getAsString("descripcion"))));
             tipo = Integer.valueOf(cvPregs.getAsString(dbPreguntas.COLUMN_NAME_TIPO));
             try {
                 addResponse(tipo);
@@ -179,25 +193,17 @@ public class survey_activity extends AppCompatActivity {
             }
             checkBorrador(id_encuesta, loop, id_Encuestado);
         }
-        ab.setTitle(id_Encuestado);
 
-        /** EN OPTIONS MENU**/
-//        bPrev.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                saveDraft(sborrador);
-//                endView(1);
-//            }
-//        });
 
 
         bNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 Log.i(TAG, "NEXT BTN");
                 if (saveResponse(idPregTipo)) {
                     loop = nextSurvey();
-                    tvIns.setText(Html.fromHtml(cvPregs.getAsString("descripcion")));
+//                    tvIns.setText(Html.fromHtml(cvPregs.getAsString("descripcion")));
                     Log.i(TAG, String.valueOf(Html.fromHtml(cvPregs.getAsString("descripcion"))));
 
                     try {
@@ -221,8 +227,8 @@ public class survey_activity extends AppCompatActivity {
 
             }
         });
-//        rcCom.close();
     }
+
     private void setToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -295,10 +301,13 @@ public class survey_activity extends AppCompatActivity {
         verificando por el tipo de reactivo ( pregunta abierta, opción múltiple, valoración, escala de Likert
          */
         boolean r = false;
+        int index = 0;
         ContentValues cv = new ContentValues();
         TextView tvResp = (TextView) findViewById(R.id.etResp);
-        RadioGroup rgResp = (RadioGroup) findViewById(R.id.respuesta_opcional);
-        int index =   rgResp.getChildCount();
+        rgResp = (RadioGroup) findViewById(R.id.rgResp);
+        if(rgResp != null)
+            index =  rgResp.getChildCount();
+//        else index = 0;
         RadioButton[] rb = new RadioButton[index];
         String tvText, rbText;
         /*
@@ -376,31 +385,59 @@ public class survey_activity extends AppCompatActivity {
          */
         String descItemC3,  descItem;
         String[] descItems;
+        File f;
         int indx;
+        RadioGroup vgRadioGroup; //ViewGroup Radio Buttons
+        LinearLayout.LayoutParams params; // params for Pregunta
+        if(cvPregs.getAsString("idImage").toString().length() > 5){
+//            imgRL.setVisibility(View.VISIBLE);
+//            noImgRL.setVisibility(View.INVISIBLE);
+
+            ivPregs.setVisibility(View.VISIBLE);
+            ContextWrapper cw = new ContextWrapper(getApplicationContext());
+            directory = cw.getDir("images",getApplicationContext().MODE_PRIVATE);
+            f = new File(directory,cvPregs.getAsString("idImage"));
+            Bitmap b = null;
+            try {
+                b = BitmapFactory.decodeStream(new FileInputStream(f));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            if(b != null)
+                ivPregs.setImageBitmap(b);
+            else
+                ivPregs.setBackgroundColor(Color.LTGRAY);
+
+        }else{
+//            noImgRL.setVisibility(View.VISIBLE);
+//            imgRL.setVisibility(View.INVISIBLE);
+            ivPregs.setVisibility(View.GONE);
+
+        }
+        llQ = (RelativeLayout) findViewById(R.id.llQuest);
         llQ.removeAllViews();
-        if(vgResp!= null)
-            vgResp.removeAllViews();
+
         Log.i(TAG,"TIPO: "+tipo);
         Log.i(TAG,"LOOP: "+loop);
         switch (tipo){
             case 0: // son preguntas abiertas
-                if(vgResp!= null)
-                    vgResp.removeAllViews();
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT)
-                        ;
-                //EditText preguntas abiertas
-                EditText etRespuesta = new EditText(getApplicationContext());
+                params = new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT)
+                    ;
+//                //EditText preguntas abiertas
+                etRespuesta = new EditText(getApplicationContext());
+                tvPregunta = (TextView) findViewById(R.id.tvPreg);
                 etRespuesta.setId(R.id.etResp);
                 etRespuesta.setLayoutParams(params);
-                etRespuesta.setHint("Respuesta");
+//                tvPregunta.setId(R.id.tvPreg);
+                tvPregunta.setText(cvPregs.getAsString("descripcion"));
+                etRespuesta.setHint(" Escribir Respuesta ");
                 etRespuesta.setInputType(InputType.TYPE_CLASS_TEXT);
-//                etRespuesta.setImeOptions(EditorInfo.IME_ACTION_DONE);
                 etRespuesta.setBackgroundColor(Color.WHITE);
                 etRespuesta.setTextColor(Color.BLACK);
-                tvOpcs.setVisibility(View.INVISIBLE);
                 llQ.addView(etRespuesta);
+
                 break;
             case 3: // Valoración
                 /*
@@ -409,8 +446,9 @@ public class survey_activity extends AppCompatActivity {
                 Cargo pregunta por pregunta a la vista ( las opciones a valorar) hasta encontrar
                 otro tipo de reactivo ( abierta, de valoración u opción múltiple )
                  */
-                if(vgResp!= null)
-                    vgResp.removeAllViews();
+
+                vgRadioGroup =  new RadioGroup(this);// findViewById(R.id.rgResp);
+                vgRadioGroup.setId(R.id.rgResp);
                 LinearLayout.LayoutParams paramsRGC3 = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -420,9 +458,9 @@ public class survey_activity extends AppCompatActivity {
                 rgResp.setGravity(View.TEXT_ALIGNMENT_CENTER);
                 rgResp.setHorizontalGravity(View.TEXT_ALIGNMENT_CENTER);
                 rgResp = new RadioGroup(getApplicationContext());
-                rgResp = (RadioGroup) findViewById(R.id.respuesta_opcional);//.addView(llQ);
-                vgResp = (ViewGroup) findViewById(R.id.respuesta_opcional);
-                vgResp.setLayoutParams(paramsRGC3);
+                rgResp = (RadioGroup) findViewById(R.id.rgResp);//.addView(llQ);
+//                vgRadioGroup = (ViewGroup) findViewById(R.id.rgResp);
+                vgRadioGroup.setLayoutParams(paramsRGC3);
                 //leer las preguntas multiples case 3 Valoracion
                 rcPreg.open();
                 String[] dataC3;
@@ -442,7 +480,7 @@ public class survey_activity extends AppCompatActivity {
                         rbResp.setText("" + i);
                         rbResp.setTextColor(Color.BLACK);
                         //llQ.addView(rbResp);
-                        vgResp.addView(rbResp);
+                        vgRadioGroup.addView(rbResp);
 //                        descItemC3 = "Valoración de 1 hasta " + i + "<br>";
 
 //                        descItemC3 = tvOpcs.getText().toString();
@@ -453,12 +491,14 @@ public class survey_activity extends AppCompatActivity {
                     tvOpcs.append(descItemC3);
                     tvOpcs.setVisibility(View.VISIBLE);
                     tvOpcs.setText(Html.fromHtml(descItemC3));                }
-
                 break;
 
             default: //preguntas opcion multiple
-                if(vgResp!= null)
-                    vgResp.removeAllViews();
+                tvPregunta = (TextView) findViewById(R.id.tvPreg);
+                tvPregunta.setText(cvPregs.getAsString("descripcion"));
+                vgRadioGroup =  new RadioGroup(this);// findViewById(R.id.rgResp);
+                vgRadioGroup.setId(R.id.rgResp);
+
                 LinearLayout.LayoutParams paramsRG = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -469,10 +509,9 @@ public class survey_activity extends AppCompatActivity {
                 rgResp.setHorizontalGravity(View.TEXT_ALIGNMENT_CENTER);
 //                rgResp = (RadioGroup) findViewById(R.id.respuesta_opcional);
                 rgResp = new RadioGroup(getApplicationContext());
-                rgResp = (RadioGroup) findViewById(R.id.respuesta_opcional);//.addView(llQ);
-                vgResp = (ViewGroup) findViewById(R.id.respuesta_opcional);
-                vgResp.setLayoutParams(paramsRG);
-                //leer las opciones multiples
+                rgResp = (RadioGroup) findViewById(R.id.rgResp);//.addView(llQ);
+                vgRadioGroup.setLayoutParams(paramsRG);
+//                leer las opciones multiples
                 try {
                     rcOpc.open();
                 } catch (SQLException e) {
@@ -484,31 +523,17 @@ public class survey_activity extends AppCompatActivity {
                 descItem = "";
                 //leer desc de cada option
                 descItems = rcOpc.getDesc(cvPregs.getAsInteger("idPregTipo"), id_encuesta);
-
                 rcOpc.close();
-                tvOpcs.setLines(indx);
-                tvOpcs.setText("");//.toString();
-
+                RadioButton rbResp1;
                 for (int i = 1; i <= indx; i++) {
-                    rbResp = new RadioButton(getApplicationContext());
-                    //noinspection ResourceType
-                    rbResp.setId(i);
-                    rbResp.setText("" + i);
-                    rbResp.setTextColor(Color.BLACK);
-                    vgResp.addView(rbResp);
-
-                    descItem = descItem + i +") "+ descItems[i-1]+ "<br/>";
-                    tvOpcs.append(descItem);
-
+                    rbResp1 = new RadioButton(getApplicationContext());
+                    rbResp1.setId(i);
+                    rbResp1.setText(i + "- " + descItems[i - 1]);
+                    rbResp1.setTextColor(Color.BLACK);
+                    vgRadioGroup.addView(rbResp1);
                 }
-                rcOpc.open();
-                String descItem2 = rcOpc.getRespVal(cvPregs.getAsInteger("idPregTipo"), id_encuesta);
-                Log.i(TAG+"Case 2:",descItem2);
-                rcOpc.close();
-                tvOpcs.setVisibility(View.VISIBLE);
-                tvOpcs.setText(Html.fromHtml(descItem));
-//                break;
-                break;
+                llQ.addView(vgRadioGroup);
+            break;
 
         }
 
@@ -595,6 +620,8 @@ public class survey_activity extends AppCompatActivity {
                 return true;
             case R.id.survey_draft:
                 Log.i(TAG," Drafts ");
+                saveDraft(sborrador);
+                endView(1);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -35,11 +35,13 @@ public class rcConfig {
 
     public boolean addUser(ContentValues cv){
         ContentValues x = new ContentValues();
-        String id, user;
+        String id, user, name;
         id = cv.getAsString("ID");
         user = cv.getAsString("USER");
+        name = cv.getAsString("NAME");
         x.put(dbTable.COLUMN_NAME_ID, id);
         x.put(dbTable.COLUMN_NAME_USUARIO, user);
+        x.put(dbTable.COLUMN_NAME_NOMBRE, name);
         return database.insert(dbTable.TABLE_NAME, null, x) >= 0;
     }
     public boolean delUser(){//String toDel
@@ -181,4 +183,17 @@ public class rcConfig {
         return result;
     }
 
+    public String[] getHeaderInfo() {
+        String sql = "select "+dbTable.COLUMN_NAME_NOMBRE +" , "+ dbTable.COLUMN_NAME_USUARIO + " from "+ dbTable.TABLE_NAME;
+        String[] data = new String[]{"X","O"};
+        Cursor c = database.rawQuery(sql,null);
+        c.moveToFirst();
+        while (!c.isAfterLast()) { // no encontró
+            data[0] = c.getString(0);
+            data[1] = c.getString(1);
+            c.moveToNext();
+        }
+        c.close();
+        return data;
+    }
 }
