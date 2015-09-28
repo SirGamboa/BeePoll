@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
+
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -53,15 +53,12 @@ public class fEncuestas extends Fragment {
     private boolean flagEncs = false;
     private boolean flagEdo = false;
     ContentValues cv;
-    private ProgressBar pb;
     //---
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         root = (ViewGroup) inflater.inflate(R.layout.encuestas_expandiblelistview, null);
         cntx = container.getContext();
         Log.i(TAG, "Entre onCreateView Encuestas Portada");
         email = "";
-        pb = (ProgressBar) root.findViewById(R.id.pbar);
-        pb.setVisibility(View.INVISIBLE);
         mSwipeRefreshLayout = (SwipeRefreshLayout) root.findViewById(R.id.swipe_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -128,6 +125,7 @@ public class fEncuestas extends Fragment {
             case R.id.action_sync:
                 Log.i(TAG, "CLICKED SYNC! WSData");
                 wsLoadJSON();
+
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -137,10 +135,9 @@ public class fEncuestas extends Fragment {
         //--- WS Load JSON API
         ws = new wsData();
         if(flagEncs) {
-            pb.setVisibility(View.VISIBLE);
-            pb.setProgress(50);
             //noinspection unchecked
             new loadWS().execute();
+//            new loadImages().execute();
         }
         else Log.i(TAG, "EMPTY email");
 
@@ -256,11 +253,13 @@ public class fEncuestas extends Fragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        pb.setVisibility(View.GONE);
+
                         mSwipeRefreshLayout.setRefreshing(false);
                         if (flagEdo) {
                             //--- Load info to Expandible list
+                            Log.i(TAG,"Cargando Lista Encuestas");
                             ListEncuestas();
+                            Log.i(TAG, "Terminado cargar Lista Encuestas");
                         } else
                             Toast.makeText(cntx, "No hay encuestas disponible para el usuario: " + email, Toast.LENGTH_SHORT).show();
                     }
@@ -276,6 +275,39 @@ public class fEncuestas extends Fragment {
                 e.printStackTrace();
             }
 //            ListEncuestas();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Object o) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        ws.loadImage(cntx.getApplicationContext());
+                    } catch (IOException | SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            super.onPostExecute(o);
+        }
+    }
+
+    private class loadImages  extends AsyncTask{
+        @Override
+        protected Object doInBackground(Object[] objects) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        ws.loadImage(cntx.getApplicationContext());
+                    } catch (IOException | SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
             return null;
         }
     }

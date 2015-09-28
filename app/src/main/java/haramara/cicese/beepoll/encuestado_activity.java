@@ -1,8 +1,11 @@
 package haramara.cicese.beepoll;
 
+import android.annotation.TargetApi;
 import android.app.DatePickerDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
@@ -20,8 +23,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.sql.SQLException;
@@ -39,22 +40,24 @@ import haramara.cicese.beepoll.db.rcEncuestado;
 public class encuestado_activity extends AppCompatActivity{
     private dbEncuestado database;
     private rcEncuestado rcEnc;
-    private RelativeLayout ll;
+    private LinearLayout ll;
     private int dUser = 0;
     private int s=-1;
     private final String TAG = "AddENCUESTADO";
     private Toolbar toolbar;
     ActionBar ab;
+    private Context context;
 
     private FloatingActionButton next;
     private Button btDate;
-    private TextView tvApellido;
-    private TextView tvNombres;
-    private TextView tvedoCivil;
-    private TextView rgLabel;
+//    private TextView tvApellido;
+//    private TextView tvNombres;
+//    private TextView tvedoCivil;
+//    private TextView rgLabel;
     private EditText etApellidos_text;
     private EditText etnombres_text;
     private EditText etedoCivilText;
+    private RadioGroup rgLabel;
     private RadioButton rbmasc;
     private RadioButton rbfem;
     private String nombres="NN";
@@ -69,21 +72,21 @@ public class encuestado_activity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         //----- variables y declaraciones
         setContentView(R.layout.encuestado_layout);
-        ll = (RelativeLayout) findViewById(R.id.create_user_content);
+        ll = (LinearLayout) findViewById(R.id.RLAdd);
         setToolbar();
         Intent i = getIntent();
         dUser = i.getExtras().getInt("edo");
         btDate = (Button) findViewById(R.id.btDate);
-        tvApellido = (TextView) findViewById(R.id.apellidos);
-        tvNombres = (TextView) findViewById(R.id.nombres);
+//        tvApellido = (TextView) findViewById(R.id.ape);
+//        tvNombres = (TextView) findViewById(R.id.nom);
 //        TextView tvFechaLabel = (TextView) findViewById(R.id.fechaLabel);
-        tvedoCivil = (TextView) findViewById(R.id.edoCivil);
+//        tvedoCivil = (TextView) findViewById(R.id.edoCivil);
         //--- EditText
-        etApellidos_text = (EditText) findViewById(R.id.apellidos_text);
-        etnombres_text = (EditText) findViewById(R.id.nombres_text);
-        etedoCivilText = (EditText) findViewById(R.id.edoCivilText);
+        etApellidos_text = (EditText) findViewById(R.id.ape);
+        etnombres_text = (EditText) findViewById(R.id.nom);
+        etedoCivilText = (EditText) findViewById(R.id.EstadoCivil);
         //--- RGs
-        rgLabel = (TextView) findViewById(R.id.rg_label);
+        rgLabel = (RadioGroup) findViewById(R.id.rg_label);
         rbmasc = (RadioButton) findViewById(R.id.masc);
         rbfem = (RadioButton) findViewById(R.id.fem);
         ab.setTitle("Nuevo Encuestado");
@@ -118,7 +121,7 @@ public class encuestado_activity extends AppCompatActivity{
                 // String shhmmss
                 fnac  = tm.toString().substring(9,15);
                 // apellidos = "AP PM"; nombres = "NM"; edocivil = "EC";
-                RadioGroup rg = (RadioGroup) findViewById(R.id.rg_container);
+                RadioGroup rg = (RadioGroup) findViewById(R.id.rg_label);
                 int id_checked;// = rg.getCheckedRadioButtonId();
                 if(etApellidos_text.getVisibility() == View.VISIBLE){
                     flagCheck ++;
@@ -141,15 +144,14 @@ public class encuestado_activity extends AppCompatActivity{
                     if(!fnac.isEmpty()) flagCheck --;
                 }
                 if(rgLabel.getVisibility()== View.VISIBLE){
-                    flagCheck ++;
-                    id_checked = rg.getCheckedRadioButtonId();
-                    View sexo_op = findViewById(id_checked);
-                    int selected_id = rg.indexOfChild(sexo_op);
+                   // flagCheck ++;
+                   // int id_checked = rg.getCheckedRadioButtonId();
+//                    View sexo_op = findViewById(R.id.rg_label);
 //                    Button rb_checked = (Button) rg.getChildAt(selected_id);
-                    if(id_checked > 0) {
-                        s =selected_id;
-                        flagCheck --;
-                    }
+//                    if(selected_id > 0) {
+//                        s =selected_id;
+//                        flagCheck --;
+//                    }
 
                 }
 
@@ -172,14 +174,14 @@ public class encuestado_activity extends AppCompatActivity{
                     }
                     int ind = apps.length;
                     ContentValues cv = new ContentValues();
-                    cv.put(database.COLUMN_NAME_CLAVE, clave);
-                    cv.put(database.COLUMN_NAME_NOMBRES, nombres);
-                    cv.put(database.COLUMN_NAME_APELLIDO_PATERNO, apps[0]);
+                    cv.put(dbEncuestado.COLUMN_NAME_CLAVE, clave);
+                    cv.put(dbEncuestado.COLUMN_NAME_NOMBRES, nombres);
+                    cv.put(dbEncuestado.COLUMN_NAME_APELLIDO_PATERNO, apps[0]);
                     if(ind > 1)
-                        cv.put(database.COLUMN_NAME_APELLIDO_MATERNO, apps[1]);
-                    else cv.put(database.COLUMN_NAME_APELLIDO_MATERNO, "LN");
-                    cv.put(database.COLUMN_NAME_FECHA_NACIMIENTO, fnac);
-                    cv.put(database.COLUMN_NAME_SEXO, sexo);
+                        cv.put(dbEncuestado.COLUMN_NAME_APELLIDO_MATERNO, apps[1]);
+                    else cv.put(dbEncuestado.COLUMN_NAME_APELLIDO_MATERNO, "LN");
+                    cv.put(dbEncuestado.COLUMN_NAME_FECHA_NACIMIENTO, fnac);
+                    cv.put(dbEncuestado.COLUMN_NAME_SEXO, sexo);
                     rcEnc.addEncuestado(cv);
 
                     Intent i = new Intent();
@@ -207,29 +209,34 @@ public class encuestado_activity extends AppCompatActivity{
     Tipo encuesta: 111110 (Nombre, sexo, estado civil, apellido, fecha nacimiento)
     Tipo encuesta: 1 (anónimo)
      */
+    @TargetApi(Build.VERSION_CODES.M)
     private void showUserInputs(int dUser) {
 
-        tvNombres.setVisibility(View.INVISIBLE);
-        etnombres_text.setVisibility(View.INVISIBLE);
-        rgLabel.setVisibility(View.INVISIBLE);
+
+        //---- Nombre
+        etnombres_text.setVisibility(View.VISIBLE);
+        //----Apellidos
+        etApellidos_text.setVisibility(View.VISIBLE);
+        //---- Edo Civil
+        etedoCivilText.setVisibility(View.VISIBLE);
+        //--- Fecha Nac
+        btDate.setVisibility(View.VISIBLE);
+        //---- RG Label
+        rgLabel.setVisibility(View.VISIBLE);
         rbmasc.setVisibility(View.VISIBLE);
         rbfem.setVisibility(View.VISIBLE);
-        tvedoCivil.setVisibility(View.INVISIBLE);
-        etedoCivilText.setVisibility(View.INVISIBLE);
-        btDate.setVisibility(View.INVISIBLE);
-        tvApellido.setVisibility(View.INVISIBLE);
-        etApellidos_text.setVisibility(View.INVISIBLE);
         Time tm = new Time();
         tm.setToNow();
         tm.format("HHmmss");
-//                String[] sTime = tm.toString().split("T",6);
         String shhmmss = tm.toString().substring(9,15);
-        ll.removeAllViews();
 
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.MATCH_PARENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT)
-                ;
+//        ll.setOrientation(LinearLayout.VERTICAL);
+//        ll.removeAllViews();
+
+
+
+
+
 
         String Text="Favor de ingresar los datos que se piden.";
         switch(dUser){
@@ -242,12 +249,12 @@ public class encuestado_activity extends AppCompatActivity{
                 clave = "an"+ shhmmss;
                 Log.i(TAG, clave);
                 ContentValues cv = new ContentValues();
-                cv.put(database.COLUMN_NAME_CLAVE, clave);
-                cv.put(database.COLUMN_NAME_NOMBRES, "Anonimo");
-                cv.put(database.COLUMN_NAME_APELLIDO_PATERNO, "");
-                cv.put(database.COLUMN_NAME_APELLIDO_MATERNO, "");
-                cv.put(database.COLUMN_NAME_FECHA_NACIMIENTO, "");
-                cv.put(database.COLUMN_NAME_SEXO, "");
+                cv.put(dbEncuestado.COLUMN_NAME_CLAVE, clave);
+                cv.put(dbEncuestado.COLUMN_NAME_NOMBRES, "Anonimo");
+                cv.put(dbEncuestado.COLUMN_NAME_APELLIDO_PATERNO, "");
+                cv.put(dbEncuestado.COLUMN_NAME_APELLIDO_MATERNO, "");
+                cv.put(dbEncuestado.COLUMN_NAME_FECHA_NACIMIENTO, "");
+                cv.put(dbEncuestado.COLUMN_NAME_SEXO, "");
                 rcEnc.addEncuestado(cv);
 
                 Intent i = new Intent();
@@ -258,1117 +265,205 @@ public class encuestado_activity extends AppCompatActivity{
                 finish();
                 break;
             case 10: //dob
-                btDate = new Button(getApplicationContext());
-                btDate.setId(R.id.btDate);
-                btDate.setLayoutParams(params);
-                btDate.setText("Fecha Nacimiento");
-                btDate.setVisibility(View.VISIBLE);
-                ll.addView(btDate);
+                etnombres_text.setVisibility(View.INVISIBLE);
+                rgLabel.setVisibility(View.INVISIBLE);
+                rbmasc.setVisibility(View.INVISIBLE);
+                rbfem.setVisibility(View.INVISIBLE);
+                etedoCivilText.setVisibility(View.INVISIBLE);
+                etApellidos_text.setVisibility(View.INVISIBLE);
+
                 break;
             case 100: //apellido
-                tvApellido = new TextView(getApplicationContext());
-                tvApellido.setId(R.id.apellidos);
-                tvApellido.setLayoutParams(params);
-                tvApellido.setVisibility(View.VISIBLE);
-                tvApellido.setText("Apellido:");
-                tvApellido.setTextColor(getResources().getColor(R.color.black));
-                etApellidos_text = new EditText(getApplicationContext());
-                etApellidos_text.setId(R.id.apellidos_text);
-                etApellidos_text.setVisibility(View.VISIBLE);
-                etApellidos_text.setBackgroundColor(getResources().getColor(R.color.white));
-                etApellidos_text.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(tvApellido);
-                ll.addView(etApellidos_text);
+                etnombres_text.setVisibility(View.INVISIBLE);
+                rgLabel.setVisibility(View.INVISIBLE);
+                rbmasc.setVisibility(View.INVISIBLE);
+                rbfem.setVisibility(View.INVISIBLE);
+                etedoCivilText.setVisibility(View.INVISIBLE);
+                btDate.setVisibility(View.INVISIBLE);
                 break;
             case 1000: //edo Civil
-                tvedoCivil = new TextView(getApplicationContext());
-                tvedoCivil.setId(R.id.edoCivil);
-                tvedoCivil.setLayoutParams(params);
-                tvedoCivil.setText("Estado Civil:");
-                tvedoCivil.setTextColor(getResources().getColor(R.color.black));
-                tvedoCivil.setVisibility(View.VISIBLE);
-                etedoCivilText = new EditText(getApplicationContext());
-                etedoCivilText.setId(R.id.edoCivilText);
-                etedoCivilText.setLayoutParams(params);
-                etedoCivilText.setBackgroundColor(getResources().getColor(R.color.white));
-                etedoCivilText.setVisibility(View.VISIBLE);
-                etedoCivilText.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(tvedoCivil);
-                ll.addView(etedoCivilText);
+                etnombres_text.setVisibility(View.INVISIBLE);
+                rgLabel.setVisibility(View.INVISIBLE);
+                rbmasc.setVisibility(View.INVISIBLE);
+                rbfem.setVisibility(View.INVISIBLE);
+                btDate.setVisibility(View.INVISIBLE);
+                etApellidos_text.setVisibility(View.INVISIBLE);
                 break;
             case 10000: //sexo
-                //---- RG Label
-                rgLabel = new TextView(getApplicationContext());
-                rgLabel.setId(R.id.rg_label);
-                rgLabel.setText("Sexo:");
-                rgLabel.setVisibility(View.VISIBLE);
-                rgLabel.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(rgLabel);
-                rbmasc = new RadioButton(getApplicationContext());
-                rbmasc.setId(R.id.masc);
-                rbmasc.setText("Masculino");
-                rbmasc.setTextColor(getResources().getColor(R.color.black));
-                rbmasc.setVisibility(View.VISIBLE);
-                rbfem = new RadioButton(getApplicationContext());
-                rbfem.setId(R.id.fem);
-                rbfem.setText("Femenino");
-                rbfem.setVisibility(View.VISIBLE);
-                rbfem.setTextColor(getResources().getColor(R.color.black));
-                RadioGroup rgroup = new RadioGroup(getApplicationContext());
-                rgroup.setId(R.id.rg_container);
-                rgroup.addView(rbmasc);
-                rgroup.addView(rbfem);
-                ll.addView(rgroup);
-
+                etnombres_text.setVisibility(View.INVISIBLE);
+                etedoCivilText.setVisibility(View.INVISIBLE);
+                btDate.setVisibility(View.INVISIBLE);
+                etApellidos_text.setVisibility(View.INVISIBLE);
                 break;
             case 100000: //nombre
-                tvNombres = new TextView(getApplicationContext());
-                tvNombres.setId(R.id.nombres);
-                tvNombres.setLayoutParams(params);
-                tvNombres.setVisibility(View.VISIBLE);
-                tvNombres.setText("Nombre(s):");
-                tvNombres.setTextColor(getResources().getColor(R.color.black));
-                etnombres_text = new EditText(getApplicationContext());
-                etnombres_text.setId(R.id.nombres_text);
-                etnombres_text.setVisibility(View.VISIBLE);
-                etnombres_text.setBackgroundColor(getResources().getColor(R.color.white));
-                etnombres_text.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(tvNombres);
-                ll.addView(etnombres_text);
-//                etnombres_text.setVisibility(View.VISIBLE);
+                rgLabel.setVisibility(View.INVISIBLE);
+                rbmasc.setVisibility(View.INVISIBLE);
+                rbfem.setVisibility(View.INVISIBLE);
+                etedoCivilText.setVisibility(View.INVISIBLE);
+                btDate.setVisibility(View.INVISIBLE);
+                etApellidos_text.setVisibility(View.INVISIBLE);
                 break;
             case 110: // Apellido, fecha Nac
-                btDate = new Button(getApplicationContext());
-                btDate.setId(R.id.btDate);
-                btDate.setLayoutParams(params);
-                btDate.setText("Fecha Nacimiento");
-                btDate.setVisibility(View.VISIBLE);
-                ll.addView(btDate);
-                tvApellido = new TextView(getApplicationContext());
-                tvApellido.setId(R.id.apellidos);
-                tvApellido.setLayoutParams(params);
-                tvApellido.setVisibility(View.VISIBLE);
-                tvApellido.setTextColor(getResources().getColor(R.color.black));
-                tvApellido.setText("Apellido:");
-                etApellidos_text = new EditText(getApplicationContext());
-                etApellidos_text.setId(R.id.apellidos_text);
-                etApellidos_text.setVisibility(View.VISIBLE);
-                etApellidos_text.setBackgroundColor(getResources().getColor(R.color.white));
-                etApellidos_text.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(tvApellido);
-                ll.addView(etApellidos_text);
+                etnombres_text.setVisibility(View.INVISIBLE);
+                rgLabel.setVisibility(View.INVISIBLE);
+                rbmasc.setVisibility(View.INVISIBLE);
+                rbfem.setVisibility(View.INVISIBLE);
+                etedoCivilText.setVisibility(View.INVISIBLE);
                 break;
             case 1010:// edo civil, fecha Nac
-                btDate = new Button(getApplicationContext());
-                btDate.setId(R.id.btDate);
-                btDate.setLayoutParams(params);
-                btDate.setText("Fecha Nacimiento");
-                btDate.setVisibility(View.VISIBLE);
-                ll.addView(btDate);
-                tvedoCivil = new TextView(getApplicationContext());
-                tvedoCivil.setId(R.id.edoCivil);
-                tvedoCivil.setLayoutParams(params);
-                tvedoCivil.setText("Estado Civil:");
-                tvedoCivil.setVisibility(View.VISIBLE);
-                tvedoCivil.setTextColor(getResources().getColor(R.color.black));
-                etedoCivilText = new EditText(getApplicationContext());
-                etedoCivilText.setId(R.id.edoCivilText);
-                etedoCivilText.setLayoutParams(params);
-                etedoCivilText.setBackgroundColor(getResources().getColor(R.color.white));
-                etedoCivilText.setTextColor(getResources().getColor(R.color.black));
-                etedoCivilText.setVisibility(View.VISIBLE);
-                ll.addView(tvedoCivil);
-                ll.addView(etedoCivilText);
+                etnombres_text.setVisibility(View.INVISIBLE);
+                rgLabel.setVisibility(View.INVISIBLE);
+                rbmasc.setVisibility(View.INVISIBLE);
+                rbfem.setVisibility(View.INVISIBLE);
+                etApellidos_text.setVisibility(View.INVISIBLE);
                 break;
             case 1100:// edo civil, apellido
-                tvedoCivil = new TextView(getApplicationContext());
-                tvedoCivil.setId(R.id.edoCivil);
-                tvedoCivil.setLayoutParams(params);
-                tvedoCivil.setText("Estado Civil:");
-                tvedoCivil.setVisibility(View.VISIBLE);
-                tvedoCivil.setTextColor(getResources().getColor(R.color.black));
-                etedoCivilText = new EditText(getApplicationContext());
-                etedoCivilText.setId(R.id.edoCivilText);
-                etedoCivilText.setLayoutParams(params);
-                etedoCivilText.setBackgroundColor(getResources().getColor(R.color.white));
-                etedoCivilText.setTextColor(getResources().getColor(R.color.black));
-                etedoCivilText.setVisibility(View.VISIBLE);
-                ll.addView(tvedoCivil);
-                ll.addView(etedoCivilText);
-                tvApellido = new TextView(getApplicationContext());
-                tvApellido.setId(R.id.apellidos);
-                tvApellido.setLayoutParams(params);
-                tvApellido.setVisibility(View.VISIBLE);
-                tvApellido.setTextColor(getResources().getColor(R.color.black));
-                tvApellido.setText("Apellido:");
-                etApellidos_text = new EditText(getApplicationContext());
-                etApellidos_text.setId(R.id.apellidos_text);
-                etApellidos_text.setVisibility(View.VISIBLE);
-                etApellidos_text.setBackgroundColor(getResources().getColor(R.color.white));
-                etApellidos_text.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(tvApellido);
-                ll.addView(etApellidos_text);
+                etnombres_text.setVisibility(View.INVISIBLE);
+                rgLabel.setVisibility(View.INVISIBLE);
+                rbmasc.setVisibility(View.INVISIBLE);
+                rbfem.setVisibility(View.INVISIBLE);
+                btDate.setVisibility(View.INVISIBLE);
                 break;
             case 1110: // edo civil, apellido, fecha Nac
-
-                //----Apellidos
-                tvApellido = new TextView(getApplicationContext());
-                tvApellido.setId(R.id.apellidos);
-                tvApellido.setLayoutParams(params);
-                tvApellido.setVisibility(View.VISIBLE);
-                tvApellido.setText("Apellido:");
-                tvApellido.setTextColor(getResources().getColor(R.color.black));
-                etApellidos_text = new EditText(getApplicationContext());
-                etApellidos_text.setId(R.id.apellidos_text);
-                etApellidos_text.setVisibility(View.VISIBLE);
-                etApellidos_text.setBackgroundColor(getResources().getColor(R.color.white));
-                etApellidos_text.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(tvApellido);
-                ll.addView(etApellidos_text);
-
-                //---- Edo Civil
-                tvedoCivil = new TextView(getApplicationContext());
-                tvedoCivil.setId(R.id.edoCivil);
-                tvedoCivil.setLayoutParams(params);
-                tvedoCivil.setText("Estado Civil:");
-                tvedoCivil.setTextColor(getResources().getColor(R.color.black));
-                tvedoCivil.setVisibility(View.VISIBLE);
-                etedoCivilText = new EditText(getApplicationContext());
-                etedoCivilText.setId(R.id.edoCivilText);
-                etedoCivilText.setLayoutParams(params);
-                etedoCivilText.setVisibility(View.VISIBLE);
-                etedoCivilText.setBackgroundColor(getResources().getColor(R.color.white));
-                etedoCivilText.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(tvedoCivil);
-                ll.addView(etedoCivilText);
-                //--- Fecha Nac
-                btDate = new Button(getApplicationContext());
-                btDate.setId(R.id.btDate);
-                btDate.setLayoutParams(params);
-                btDate.setText("Fecha Nacimiento");
-                btDate.setVisibility(View.VISIBLE);
-                ll.addView(btDate);
+                etnombres_text.setVisibility(View.INVISIBLE);
+                rgLabel.setVisibility(View.INVISIBLE);
+                rbmasc.setVisibility(View.INVISIBLE);
+                rbfem.setVisibility(View.INVISIBLE);
                 break;
             case 10010: // sexo, fecha Nac
-
-                //---- RG Label
-                rgLabel = new TextView(getApplicationContext());
-                rgLabel.setId(R.id.rg_label);
-                rgLabel.setText("Sexo:");
-                rgLabel.setVisibility(View.VISIBLE);
-                rgLabel.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(rgLabel);
-                rbmasc = new RadioButton(getApplicationContext());
-                rbmasc.setId(R.id.masc);
-                rbmasc.setText("Masculino");
-                rbmasc.setTextColor(getResources().getColor(R.color.black));
-                rbmasc.setVisibility(View.VISIBLE);
-                rbfem = new RadioButton(getApplicationContext());
-                rbfem.setId(R.id.fem);
-                rbfem.setText("Femenino");
-                rbfem.setVisibility(View.VISIBLE);
-                rbfem.setTextColor(getResources().getColor(R.color.black));
-                rgroup = new RadioGroup(getApplicationContext());
-                rgroup.setId(R.id.rg_container);
-                rgroup.addView(rbmasc);
-                rgroup.addView(rbfem);
-                ll.addView(rgroup);
-
-                //--- Fecha Nac
-                btDate = new Button(getApplicationContext());
-                btDate.setId(R.id.btDate);
-                btDate.setLayoutParams(params);
-                btDate.setText("Fecha Nacimiento");
-                btDate.setVisibility(View.VISIBLE);
-                ll.addView(btDate);
+                etnombres_text.setVisibility(View.INVISIBLE);
+                etedoCivilText.setVisibility(View.INVISIBLE);
+                etApellidos_text.setVisibility(View.INVISIBLE);
                 break;
             case 10100: //sexo, apellido
-
-                //----Apellidos
-                tvApellido = new TextView(getApplicationContext());
-                tvApellido.setId(R.id.apellidos);
-                tvApellido.setLayoutParams(params);
-                tvApellido.setVisibility(View.VISIBLE);
-                tvApellido.setText("Apellido:");
-                tvApellido.setTextColor(getResources().getColor(R.color.black));
-                etApellidos_text = new EditText(getApplicationContext());
-                etApellidos_text.setId(R.id.apellidos_text);
-                etApellidos_text.setVisibility(View.VISIBLE);
-                etApellidos_text.setBackgroundColor(getResources().getColor(R.color.white));
-                etApellidos_text.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(tvApellido);
-                ll.addView(etApellidos_text);
-                //---- RG Label
-                rgLabel = new TextView(getApplicationContext());
-                rgLabel.setId(R.id.rg_label);
-                rgLabel.setText("Sexo:");
-                rgLabel.setVisibility(View.VISIBLE);
-                rgLabel.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(rgLabel);
-                rbmasc = new RadioButton(getApplicationContext());
-                rbmasc.setId(R.id.masc);
-                rbmasc.setText("Masculino");
-                rbmasc.setTextColor(getResources().getColor(R.color.black));
-                rbmasc.setVisibility(View.VISIBLE);
-                rbfem = new RadioButton(getApplicationContext());
-                rbfem.setId(R.id.fem);
-                rbfem.setText("Femenino");
-                rbfem.setVisibility(View.VISIBLE);
-                rbfem.setTextColor(getResources().getColor(R.color.black));
-                rgroup = new RadioGroup(getApplicationContext());
-                rgroup.setId(R.id.rg_container);
-                rgroup.addView(rbmasc);
-                rgroup.addView(rbfem);
-                ll.addView(rgroup);
+                etnombres_text.setVisibility(View.INVISIBLE);
+                rgLabel.setVisibility(View.INVISIBLE);
+                rbmasc.setVisibility(View.INVISIBLE);
+                rbfem.setVisibility(View.INVISIBLE);
+                etedoCivilText.setVisibility(View.INVISIBLE);
 
                 break;
             case 10110: // fecha nac, apellido, sexo
-                //----Apellidos
-                tvApellido = new TextView(getApplicationContext());
-                tvApellido.setId(R.id.apellidos);
-                tvApellido.setLayoutParams(params);
-                tvApellido.setVisibility(View.VISIBLE);
-                tvApellido.setText("Apellido:");
-                tvApellido.setTextColor(getResources().getColor(R.color.black));
-                etApellidos_text = new EditText(getApplicationContext());
-                etApellidos_text.setId(R.id.apellidos_text);
-                etApellidos_text.setVisibility(View.VISIBLE);
-                etApellidos_text.setBackgroundColor(getResources().getColor(R.color.white));
-                etApellidos_text.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(tvApellido);
-                ll.addView(etApellidos_text);
-                //---- RG Label
-                rgLabel = new TextView(getApplicationContext());
-                rgLabel.setId(R.id.rg_label);
-                rgLabel.setText("Sexo:");
-                rgLabel.setVisibility(View.VISIBLE);
-                rgLabel.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(rgLabel);
-                rbmasc = new RadioButton(getApplicationContext());
-                rbmasc.setId(R.id.masc);
-                rbmasc.setText("Masculino");
-                rbmasc.setTextColor(getResources().getColor(R.color.black));
-                rbmasc.setVisibility(View.VISIBLE);
-                rbfem = new RadioButton(getApplicationContext());
-                rbfem.setId(R.id.fem);
-                rbfem.setText("Femenino");
-                rbfem.setVisibility(View.VISIBLE);
-                rbfem.setTextColor(getResources().getColor(R.color.black));
-                rgroup = new RadioGroup(getApplicationContext());
-                rgroup.setId(R.id.rg_container);
-                rgroup.addView(rbmasc);
-                rgroup.addView(rbfem);
-                ll.addView(rgroup);
-
-                //--- Fecha Nac
-                btDate = new Button(getApplicationContext());
-                btDate.setId(R.id.btDate);
-                btDate.setLayoutParams(params);
-                btDate.setText("Fecha Nacimiento");
-                btDate.setVisibility(View.VISIBLE);
-                ll.addView(btDate);
+                etnombres_text.setVisibility(View.INVISIBLE);
+                etedoCivilText.setVisibility(View.INVISIBLE);
                 break;
             case 11000:// sexo, edo civil
-
-                //---- RG Label
-                rgLabel = new TextView(getApplicationContext());
-                rgLabel.setId(R.id.rg_label);
-                rgLabel.setText("Sexo:");
-                rgLabel.setVisibility(View.VISIBLE);
-                rgLabel.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(rgLabel);
-                rbmasc = new RadioButton(getApplicationContext());
-                rbmasc.setId(R.id.masc);
-                rbmasc.setText("Masculino");
-                rbmasc.setTextColor(getResources().getColor(R.color.black));
-                rbmasc.setVisibility(View.VISIBLE);
-                rbfem = new RadioButton(getApplicationContext());
-                rbfem.setId(R.id.fem);
-                rbfem.setText("Femenino");
-                rbfem.setVisibility(View.VISIBLE);
-                rbfem.setTextColor(getResources().getColor(R.color.black));
-                rgroup = new RadioGroup(getApplicationContext());
-                rgroup.setId(R.id.rg_container);
-                rgroup.addView(rbmasc);
-                rgroup.addView(rbfem);
-                ll.addView(rgroup);
-                //---- Edo Civil
-                tvedoCivil = new TextView(getApplicationContext());
-                tvedoCivil.setId(R.id.edoCivil);
-                tvedoCivil.setLayoutParams(params);
-                tvedoCivil.setText("Estado Civil:");
-                tvedoCivil.setTextColor(getResources().getColor(R.color.black));
-                tvedoCivil.setVisibility(View.VISIBLE);
-                etedoCivilText = new EditText(getApplicationContext());
-                etedoCivilText.setId(R.id.edoCivilText);
-                etedoCivilText.setLayoutParams(params);
-                etedoCivilText.setVisibility(View.VISIBLE);
-                etedoCivilText.setBackgroundColor(getResources().getColor(R.color.white));
-                etedoCivilText.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(tvedoCivil);
-                ll.addView(etedoCivilText);
+                etnombres_text.setVisibility(View.INVISIBLE);
+                btDate.setVisibility(View.INVISIBLE);
+                etApellidos_text.setVisibility(View.INVISIBLE);
 
                 break;
             case 11010:// sexo, edo civil, dob
+                etnombres_text.setVisibility(View.INVISIBLE);
+                etApellidos_text.setVisibility(View.INVISIBLE);
 
-                //---- RG Label
-                rgLabel = new TextView(getApplicationContext());
-                rgLabel.setId(R.id.rg_label);
-                rgLabel.setText("Sexo:");
-                rgLabel.setVisibility(View.VISIBLE);
-                rgLabel.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(rgLabel);
-                rbmasc = new RadioButton(getApplicationContext());
-                rbmasc.setId(R.id.masc);
-                rbmasc.setText("Masculino");
-                rbmasc.setTextColor(getResources().getColor(R.color.black));
-                rbmasc.setVisibility(View.VISIBLE);
-                rbfem = new RadioButton(getApplicationContext());
-                rbfem.setId(R.id.fem);
-                rbfem.setText("Femenino");
-                rbfem.setVisibility(View.VISIBLE);
-                rbfem.setTextColor(getResources().getColor(R.color.black));
-                rgroup = new RadioGroup(getApplicationContext());
-                rgroup.setId(R.id.rg_container);
-                rgroup.addView(rbmasc);
-                rgroup.addView(rbfem);
-                ll.addView(rgroup);
-                //---- Edo Civil
-                tvedoCivil = new TextView(getApplicationContext());
-                tvedoCivil.setId(R.id.edoCivil);
-                tvedoCivil.setLayoutParams(params);
-                tvedoCivil.setText("Estado Civil:");
-                tvedoCivil.setTextColor(getResources().getColor(R.color.black));
-                tvedoCivil.setVisibility(View.VISIBLE);
-                etedoCivilText = new EditText(getApplicationContext());
-                etedoCivilText.setId(R.id.edoCivilText);
-                etedoCivilText.setLayoutParams(params);
-                etedoCivilText.setVisibility(View.VISIBLE);
-                etedoCivilText.setBackgroundColor(getResources().getColor(R.color.white));
-                etedoCivilText.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(tvedoCivil);
-                ll.addView(etedoCivilText);
-                //--- Fecha Nac
-                btDate = new Button(getApplicationContext());
-                btDate.setId(R.id.btDate);
-                btDate.setLayoutParams(params);
-                btDate.setText("Fecha Nacimiento");
-                btDate.setVisibility(View.VISIBLE);
-                ll.addView(btDate);
                 break;
             case 11100:// sexo, edo civil, apellido
-                rgLabel = new TextView(getApplicationContext());
-                rgLabel.setId(R.id.rg_label);
-                rgLabel.setText("Sexo:");
-                rgLabel.setVisibility(View.VISIBLE);
-                rgLabel.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(rgLabel);
-                rbmasc = new RadioButton(getApplicationContext());
-                rbmasc.setId(R.id.masc);
-                rbmasc.setText("Masculino");
-                rbmasc.setVisibility(View.VISIBLE);
-                rbmasc.setTextColor(getResources().getColor(R.color.black));
-                rbfem = new RadioButton(getApplicationContext());
-                rbfem.setId(R.id.fem);
-                rbfem.setText("Femenino");
-                rbfem.setVisibility(View.VISIBLE);
-                rbfem.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(rbmasc);
-                ll.addView(rbfem);
-                tvedoCivil = new TextView(getApplicationContext());
-                tvedoCivil.setId(R.id.edoCivil);
-                tvedoCivil.setLayoutParams(params);
-                tvedoCivil.setTextColor(getResources().getColor(R.color.black));
-                tvedoCivil.setText("Estado Civil:");
-                tvedoCivil.setVisibility(View.VISIBLE);
-                etedoCivilText = new EditText(getApplicationContext());
-                etedoCivilText.setId(R.id.edoCivilText);
-                etedoCivilText.setLayoutParams(params);
-                etedoCivilText.setBackgroundColor(getResources().getColor(R.color.white));
-                etedoCivilText.setTextColor(getResources().getColor(R.color.black));
-                etedoCivilText.setVisibility(View.VISIBLE);
-                ll.addView(tvedoCivil);
-                ll.addView(etedoCivilText);
-                tvApellido = new TextView(getApplicationContext());
-                tvApellido.setId(R.id.apellidos);
-                tvApellido.setLayoutParams(params);
-                tvApellido.setVisibility(View.VISIBLE);
-                tvApellido.setTextColor(getResources().getColor(R.color.black));
-                tvApellido.setText("Apellido:");
-                etApellidos_text = new EditText(getApplicationContext());
-                etApellidos_text.setId(R.id.apellidos_text);
-                etApellidos_text.setVisibility(View.VISIBLE);
-                etApellidos_text.setBackgroundColor(getResources().getColor(R.color.white));
-                etApellidos_text.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(tvApellido);
-                ll.addView(etApellidos_text);
+                etnombres_text.setVisibility(View.INVISIBLE);
+                btDate.setVisibility(View.INVISIBLE);
                 break;
             case 11110://sexo, edo civil, apellido, dob
-                rgLabel = new TextView(getApplicationContext());
-                rgLabel.setId(R.id.rg_label);
-                rgLabel.setText("Sexo:");
-                rgLabel.setVisibility(View.VISIBLE);
-                rgLabel.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(rgLabel);
-                rbmasc = new RadioButton(getApplicationContext());
-                rbmasc.setId(R.id.masc);
-                rbmasc.setText("Masculino");
-                rbmasc.setTextColor(getResources().getColor(R.color.black));
-                rbmasc.setVisibility(View.VISIBLE);
-                rbfem = new RadioButton(getApplicationContext());
-                rbfem.setId(R.id.fem);
-                rbfem.setText("Femenino");
-                rbfem.setVisibility(View.VISIBLE);
-                rbfem.setTextColor(getResources().getColor(R.color.black));
-                rgroup = new RadioGroup(getApplicationContext());
-                rgroup.setId(R.id.rg_container);
-                rgroup.addView(rbmasc);
-                rgroup.addView(rbfem);
-                ll.addView(rgroup);
-                tvedoCivil = new TextView(getApplicationContext());
-                tvedoCivil.setId(R.id.edoCivil);
-                tvedoCivil.setLayoutParams(params);
-                tvedoCivil.setText("Estado Civil:");
-                tvedoCivil.setTextColor(getResources().getColor(R.color.black));
-                tvedoCivil.setVisibility(View.VISIBLE);
-                etedoCivilText = new EditText(getApplicationContext());
-                etedoCivilText.setId(R.id.edoCivilText);
-                etedoCivilText.setLayoutParams(params);
-                etedoCivilText.setBackgroundColor(getResources().getColor(R.color.white));
-                etedoCivilText.setTextColor(getResources().getColor(R.color.black));
-                etedoCivilText.setVisibility(View.VISIBLE);
-                ll.addView(tvedoCivil);
-                ll.addView(etedoCivilText);
-                tvApellido = new TextView(getApplicationContext());
-                tvApellido.setId(R.id.apellidos);
-                tvApellido.setLayoutParams(params);
-                tvApellido.setTextColor(getResources().getColor(R.color.black));
-                tvApellido.setVisibility(View.VISIBLE);
-                tvApellido.setText("Apellido:");
-                etApellidos_text = new EditText(getApplicationContext());
-                etApellidos_text.setId(R.id.apellidos_text);
-                etApellidos_text.setVisibility(View.VISIBLE);
-                etApellidos_text.setBackgroundColor(getResources().getColor(R.color.white));
-                etApellidos_text.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(tvApellido);
-                ll.addView(etApellidos_text);
-                btDate = new Button(getApplicationContext());
-                btDate.setId(R.id.btDate);
-                btDate.setLayoutParams(params);
-                btDate.setText("Fecha Nacimiento");
-                btDate.setVisibility(View.VISIBLE);
-                ll.addView(btDate);
+                etnombres_text.setVisibility(View.INVISIBLE);
+
                 break;
             case 100010://nombre, dob
-                tvNombres = new TextView(getApplicationContext());
-                tvNombres.setId(R.id.nombres);
-                tvNombres.setLayoutParams(params);
-                tvNombres.setTextColor(getResources().getColor(R.color.black));
-                tvNombres.setVisibility(View.VISIBLE);
-                tvNombres.setText("Nombre(s):");
-                etnombres_text = new EditText(getApplicationContext());
-                etnombres_text.setId(R.id.nombres_text);
-                etnombres_text.setVisibility(View.VISIBLE);
-                etnombres_text.setBackgroundColor(getResources().getColor(R.color.white));
-                etnombres_text.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(tvNombres);
-                ll.addView(etnombres_text);
-                btDate = new Button(getApplicationContext());
-                btDate.setId(R.id.btDate);
-                btDate.setLayoutParams(params);
-                btDate.setText("Fecha Nacimiento");
-                btDate.setVisibility(View.VISIBLE);
-                ll.addView(btDate);
+
+                rgLabel.setVisibility(View.INVISIBLE);
+                rbmasc.setVisibility(View.INVISIBLE);
+                rbfem.setVisibility(View.INVISIBLE);
+                etedoCivilText.setVisibility(View.INVISIBLE);
+                etApellidos_text.setVisibility(View.INVISIBLE);
                 break;
             case 100100: //nombre, ape
-                tvApellido = new TextView(getApplicationContext());
-                tvApellido.setId(R.id.apellidos);
-                tvApellido.setLayoutParams(params);
-                tvApellido.setTextColor(getResources().getColor(R.color.black));
-                tvApellido.setVisibility(View.VISIBLE);
-                tvApellido.setText("Apellido:");
-                etApellidos_text = new EditText(getApplicationContext());
-                etApellidos_text.setId(R.id.apellidos_text);
-                etApellidos_text.setVisibility(View.VISIBLE);
-                etApellidos_text.setBackgroundColor(getResources().getColor(R.color.white));
-                etApellidos_text.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(tvApellido);
-                ll.addView(etApellidos_text);
-                tvNombres = new TextView(getApplicationContext());
-                tvNombres.setId(R.id.nombres);
-                tvNombres.setLayoutParams(params);
-                tvNombres.setTextColor(getResources().getColor(R.color.black));
-                tvNombres.setVisibility(View.VISIBLE);
-                tvNombres.setText("Nombre(s):");
-                etnombres_text = new EditText(getApplicationContext());
-                etnombres_text.setId(R.id.nombres_text);
-                etnombres_text.setVisibility(View.VISIBLE);
-                etnombres_text.setBackgroundColor(getResources().getColor(R.color.white));
-                etnombres_text.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(tvNombres);
-                ll.addView(etnombres_text);
+
+                rgLabel.setVisibility(View.INVISIBLE);
+                rbmasc.setVisibility(View.INVISIBLE);
+                rbfem.setVisibility(View.INVISIBLE);
+                etedoCivilText.setVisibility(View.INVISIBLE);
+                btDate.setVisibility(View.INVISIBLE);
                 break;
             case 100110: //nombre, apellido, dob
-                tvApellido = new TextView(getApplicationContext());
-                tvApellido.setId(R.id.apellidos);
-                tvApellido.setLayoutParams(params);
-                tvApellido.setVisibility(View.VISIBLE);
-                tvApellido.setTextColor(getResources().getColor(R.color.black));
-                tvApellido.setText("Apellido:");
-                etApellidos_text = new EditText(getApplicationContext());
-                etApellidos_text.setId(R.id.apellidos_text);
-                etApellidos_text.setVisibility(View.VISIBLE);
-                etApellidos_text.setBackgroundColor(getResources().getColor(R.color.white));
-                etApellidos_text.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(tvApellido);
-                ll.addView(etApellidos_text);
-                tvNombres = new TextView(getApplicationContext());
-                tvNombres.setId(R.id.nombres);
-                tvNombres.setLayoutParams(params);
-                tvNombres.setTextColor(getResources().getColor(R.color.black));
-                tvNombres.setVisibility(View.VISIBLE);
-                tvNombres.setText("Nombre(s):");
-                etnombres_text = new EditText(getApplicationContext());
-                etnombres_text.setId(R.id.nombres_text);
-                etnombres_text.setBackgroundColor(getResources().getColor(R.color.white));
-                etnombres_text.setTextColor(getResources().getColor(R.color.black));
-                etnombres_text.setVisibility(View.VISIBLE);
-                ll.addView(tvNombres);
-                ll.addView(etnombres_text);
-                btDate = new Button(getApplicationContext());
-                btDate.setId(R.id.btDate);
-                btDate.setLayoutParams(params);
-                btDate.setText("Fecha Nacimiento");
-                btDate.setVisibility(View.VISIBLE);
-                ll.addView(btDate);
+
+                rbmasc.setVisibility(View.INVISIBLE);
+                rbfem.setVisibility(View.INVISIBLE);
+                etedoCivilText.setVisibility(View.INVISIBLE);
                 break;
             case 101000://nombre edo civil
-                tvNombres = new TextView(getApplicationContext());
-                tvNombres.setId(R.id.nombres);
-                tvNombres.setLayoutParams(params);
-                tvNombres.setVisibility(View.VISIBLE);
-                tvNombres.setText("Nombre(s):");
-                tvNombres.setTextColor(getResources().getColor(R.color.black));
-                etnombres_text = new EditText(getApplicationContext());
-                etnombres_text.setId(R.id.nombres_text);
-                etnombres_text.setVisibility(View.VISIBLE);
-                etnombres_text.setBackgroundColor(getResources().getColor(R.color.white));
-                etnombres_text.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(tvNombres);
-                ll.addView(etnombres_text);
-                tvedoCivil = new TextView(getApplicationContext());
-                tvedoCivil.setId(R.id.edoCivil);
-                tvedoCivil.setLayoutParams(params);
-                tvedoCivil.setText("Estado Civil:");
-                tvedoCivil.setTextColor(getResources().getColor(R.color.black));
-                tvedoCivil.setVisibility(View.VISIBLE);
-                etedoCivilText = new EditText(getApplicationContext());
-                etedoCivilText.setId(R.id.edoCivilText);
-                etedoCivilText.setLayoutParams(params);
-                etedoCivilText.setBackgroundColor(getResources().getColor(R.color.white));
-                etedoCivilText.setTextColor(getResources().getColor(R.color.black));
-                etedoCivilText.setVisibility(View.VISIBLE);
-                ll.addView(tvedoCivil);
-                ll.addView(etedoCivilText);
+                rgLabel.setVisibility(View.INVISIBLE);
+                rbmasc.setVisibility(View.INVISIBLE);
+                rbfem.setVisibility(View.INVISIBLE);
+                btDate.setVisibility(View.INVISIBLE);
+                etApellidos_text.setVisibility(View.INVISIBLE);
                 break;
             case 101010: //nombre, edo civil, dob
-                tvNombres = new TextView(getApplicationContext());
-                tvNombres.setId(R.id.nombres);
-                tvNombres.setLayoutParams(params);
-                tvNombres.setTextColor(getResources().getColor(R.color.black));
-                tvNombres.setVisibility(View.VISIBLE);
-                tvNombres.setText("Nombre(s):");
-                etnombres_text = new EditText(getApplicationContext());
-                etnombres_text.setId(R.id.nombres_text);
-                etnombres_text.setVisibility(View.VISIBLE);
-                etnombres_text.setBackgroundColor(getResources().getColor(R.color.white));
-                etnombres_text.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(tvNombres);
-                ll.addView(etnombres_text);
-                tvedoCivil = new TextView(getApplicationContext());
-                tvedoCivil.setId(R.id.edoCivil);
-                tvedoCivil.setLayoutParams(params);
-                tvedoCivil.setText("Estado Civil:");
-                tvedoCivil.setTextColor(getResources().getColor(R.color.black));
-                tvedoCivil.setVisibility(View.VISIBLE);
-                etedoCivilText = new EditText(getApplicationContext());
-                etedoCivilText.setId(R.id.edoCivilText);
-                etedoCivilText.setLayoutParams(params);
-                etedoCivilText.setVisibility(View.VISIBLE);
-                etedoCivilText.setBackgroundColor(getResources().getColor(R.color.white));
-                etedoCivilText.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(tvedoCivil);
-                ll.addView(etedoCivilText);
-                btDate = new Button(getApplicationContext());
-                btDate.setId(R.id.btDate);
-                btDate.setLayoutParams(params);
-                btDate.setText("Fecha Nacimiento");
-                btDate.setVisibility(View.VISIBLE);
-                ll.addView(btDate);
+                rgLabel.setVisibility(View.INVISIBLE);
+                rbmasc.setVisibility(View.INVISIBLE);
+                rbfem.setVisibility(View.INVISIBLE);
+                etApellidos_text.setVisibility(View.INVISIBLE);
                 break;
             case 101100://Nombre apellido edoCivil
-                tvNombres = new TextView(getApplicationContext());
-                tvNombres.setId(R.id.nombres);
-                tvNombres.setLayoutParams(params);
-                tvNombres.setVisibility(View.VISIBLE);
-                tvNombres.setTextColor(getResources().getColor(R.color.black));
-                tvNombres.setText("Nombre(s):");
-                etnombres_text = new EditText(getApplicationContext());
-                etnombres_text.setId(R.id.nombres_text);
-                etnombres_text.setVisibility(View.VISIBLE);
-                etnombres_text.setBackgroundColor(getResources().getColor(R.color.white));
-                etnombres_text.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(tvNombres);
-                ll.addView(etnombres_text);
-                tvApellido = new TextView(getApplicationContext());
-                tvApellido.setId(R.id.apellidos);
-                tvApellido.setLayoutParams(params);
-                tvApellido.setVisibility(View.VISIBLE);
-                tvApellido.setTextColor(getResources().getColor(R.color.black));
-                tvApellido.setText("Apellido:");
-                etApellidos_text = new EditText(getApplicationContext());
-                etApellidos_text.setId(R.id.apellidos_text);
-                etApellidos_text.setVisibility(View.VISIBLE);
-                etApellidos_text.setBackgroundColor(getResources().getColor(R.color.white));
-                etApellidos_text.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(tvApellido);
-                ll.addView(etApellidos_text);
-                tvedoCivil = new TextView(getApplicationContext());
-                tvedoCivil.setId(R.id.edoCivil);
-                tvedoCivil.setLayoutParams(params);
-                tvedoCivil.setText("Estado Civil:");
-                tvedoCivil.setTextColor(getResources().getColor(R.color.black));
-                tvedoCivil.setVisibility(View.VISIBLE);
-                etedoCivilText = new EditText(getApplicationContext());
-                etedoCivilText.setId(R.id.edoCivilText);
-                etedoCivilText.setLayoutParams(params);
-                etedoCivilText.setBackgroundColor(getResources().getColor(R.color.white));
-                etedoCivilText.setTextColor(getResources().getColor(R.color.black));
-                etedoCivilText.setVisibility(View.VISIBLE);
-                ll.addView(tvedoCivil);
-                ll.addView(etedoCivilText);
+                rgLabel.setVisibility(View.INVISIBLE);
+                rbmasc.setVisibility(View.INVISIBLE);
+                rbfem.setVisibility(View.INVISIBLE);
+                btDate.setVisibility(View.INVISIBLE);
                 break;
             case 101110://nombre, edo civil, apellido, dob
-                tvNombres = new TextView(getApplicationContext());
-                tvNombres.setId(R.id.nombres);
-                tvNombres.setLayoutParams(params);
-                tvNombres.setVisibility(View.VISIBLE);
-                tvNombres.setText("Nombre(s):");
-                tvNombres.setTextColor(getResources().getColor(R.color.black));
-                etnombres_text = new EditText(getApplicationContext());
-                etnombres_text.setId(R.id.nombres_text);
-                etnombres_text.setVisibility(View.VISIBLE);
-                etnombres_text.setBackgroundColor(getResources().getColor(R.color.white));
-                etnombres_text.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(tvNombres);
-                ll.addView(etnombres_text);
-                tvApellido = new TextView(getApplicationContext());
-                tvApellido.setId(R.id.apellidos);
-                tvApellido.setLayoutParams(params);
-                tvApellido.setTextColor(getResources().getColor(R.color.black));
-                tvApellido.setVisibility(View.VISIBLE);
-                tvApellido.setText("Apellido:");
-                etApellidos_text = new EditText(getApplicationContext());
-                etApellidos_text.setId(R.id.apellidos_text);
-                etApellidos_text.setBackgroundColor(getResources().getColor(R.color.white));
-                etApellidos_text.setTextColor(getResources().getColor(R.color.black));
-                etApellidos_text.setVisibility(View.VISIBLE);
-                ll.addView(tvApellido);
-                ll.addView(etApellidos_text);
-                tvedoCivil = new TextView(getApplicationContext());
-                tvedoCivil.setId(R.id.edoCivil);
-                tvedoCivil.setLayoutParams(params);
-                tvedoCivil.setText("Estado Civil:");
-                tvedoCivil.setTextColor(getResources().getColor(R.color.black));
-                tvedoCivil.setVisibility(View.VISIBLE);
-                etedoCivilText = new EditText(getApplicationContext());
-                etedoCivilText.setId(R.id.edoCivilText);
-                etedoCivilText.setLayoutParams(params);
-                etedoCivilText.setVisibility(View.VISIBLE);
-                etedoCivilText.setBackgroundColor(getResources().getColor(R.color.white));
-                etedoCivilText.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(tvedoCivil);
-                ll.addView(etedoCivilText);
-                btDate = new Button(getApplicationContext());
-                btDate.setId(R.id.btDate);
-                btDate.setLayoutParams(params);
-                btDate.setText("Fecha Nacimiento");
-                btDate.setVisibility(View.VISIBLE);
-                ll.addView(btDate);
+                rgLabel.setVisibility(View.INVISIBLE);
+                rbmasc.setVisibility(View.INVISIBLE);
+                rbfem.setVisibility(View.INVISIBLE);
                 break;
             case 110000: //nombre, sexo
-                tvNombres = new TextView(getApplicationContext());
-                tvNombres.setId(R.id.nombres);
-                tvNombres.setLayoutParams(params);
-                tvNombres.setVisibility(View.VISIBLE);
-                tvNombres.setText("Nombre(s):");
-                tvNombres.setTextColor(getResources().getColor(R.color.black));
-                etnombres_text = new EditText(getApplicationContext());
-                etnombres_text.setId(R.id.nombres_text);
-                etnombres_text.setVisibility(View.VISIBLE);
-                etnombres_text.setBackgroundColor(getResources().getColor(R.color.white));
-                etnombres_text.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(tvNombres);
-                ll.addView(etnombres_text);
-                rgLabel = new TextView(getApplicationContext());
-                rgLabel.setId(R.id.rg_label);
-                rgLabel.setText("Sexo:");
-                rgLabel.setVisibility(View.VISIBLE);
-                rgLabel.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(rgLabel);
-                rbmasc = new RadioButton(getApplicationContext());
-                rbmasc.setId(R.id.masc);
-                rbmasc.setText("Masculino");
-                rbmasc.setTextColor(getResources().getColor(R.color.black));
-                rbmasc.setVisibility(View.VISIBLE);
-                rbfem = new RadioButton(getApplicationContext());
-                rbfem.setId(R.id.fem);
-                rbfem.setText("Femenino");
-                rbfem.setVisibility(View.VISIBLE);
-                rbfem.setTextColor(getResources().getColor(R.color.black));
-                rgroup = new RadioGroup(getApplicationContext());
-                rgroup.setId(R.id.rg_container);
-                rgroup.addView(rbmasc);
-                rgroup.addView(rbfem);
-                ll.addView(rgroup);
+                etedoCivilText.setVisibility(View.INVISIBLE);
+                btDate.setVisibility(View.INVISIBLE);
+                etApellidos_text.setVisibility(View.INVISIBLE);
                 break;
             case 110010://nombre, sexo, dob
-                tvNombres = new TextView(getApplicationContext());
-                tvNombres.setId(R.id.nombres);
-                tvNombres.setLayoutParams(params);
-                tvNombres.setVisibility(View.VISIBLE);
-                tvNombres.setText("Nombre(s):");
-                tvNombres.setTextColor(getResources().getColor(R.color.black));
-                etnombres_text = new EditText(getApplicationContext());
-                etnombres_text.setId(R.id.nombres_text);
-                etnombres_text.setVisibility(View.VISIBLE);
-                etnombres_text.setBackgroundColor(getResources().getColor(R.color.white));
-                etnombres_text.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(tvNombres);
-                ll.addView(etnombres_text);
-                rgLabel = new TextView(getApplicationContext());
-                rgLabel.setId(R.id.rg_label);
-                rgLabel.setText("Sexo:");
-                rgLabel.setVisibility(View.VISIBLE);
-                rgLabel.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(rgLabel);
-                rbmasc = new RadioButton(getApplicationContext());
-                rbmasc.setId(R.id.masc);
-                rbmasc.setText("Masculino");
-                rbmasc.setTextColor(getResources().getColor(R.color.black));
-                rbmasc.setVisibility(View.VISIBLE);
-                rbfem = new RadioButton(getApplicationContext());
-                rbfem.setId(R.id.fem);
-                rbfem.setText("Femenino");
-                rbfem.setVisibility(View.VISIBLE);
-                rbfem.setTextColor(getResources().getColor(R.color.black));
-                rgroup = new RadioGroup(getApplicationContext());
-                rgroup.setId(R.id.rg_container);
-                rgroup.addView(rbmasc);
-                rgroup.addView(rbfem);
-                ll.addView(rgroup);
-                btDate = new Button(getApplicationContext());
-                btDate.setId(R.id.btDate);
-                btDate.setLayoutParams(params);
-                btDate.setText("Fecha Nacimiento");
-                btDate.setVisibility(View.VISIBLE);
-                ll.addView(btDate);
+                etedoCivilText.setVisibility(View.INVISIBLE);
+                etApellidos_text.setVisibility(View.INVISIBLE);
                 break;
             case 110100: //nombre, sexo, apellido
-                tvNombres = new TextView(getApplicationContext());
-                tvNombres.setId(R.id.nombres);
-                tvNombres.setLayoutParams(params);
-                tvNombres.setVisibility(View.VISIBLE);
-                tvNombres.setText("Nombre(s):");
-                tvNombres.setTextColor(getResources().getColor(R.color.black));
-                etnombres_text = new EditText(getApplicationContext());
-                etnombres_text.setId(R.id.nombres_text);
-                etnombres_text.setVisibility(View.VISIBLE);
-                etnombres_text.setBackgroundColor(getResources().getColor(R.color.white));
-                etnombres_text.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(tvNombres);
-                ll.addView(etnombres_text);
-                tvApellido = new TextView(getApplicationContext());
-                tvApellido.setId(R.id.apellidos);
-                tvApellido.setLayoutParams(params);
-                tvApellido.setVisibility(View.VISIBLE);
-                tvApellido.setText("Apellido:");
-                tvApellido.setTextColor(getResources().getColor(R.color.black));
-                etApellidos_text = new EditText(getApplicationContext());
-                etApellidos_text.setId(R.id.apellidos_text);
-                etApellidos_text.setVisibility(View.VISIBLE);
-                etApellidos_text.setBackgroundColor(getResources().getColor(R.color.white));
-                etApellidos_text.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(tvApellido);
-                ll.addView(etApellidos_text);
-                rgLabel = new TextView(getApplicationContext());
-                rgLabel.setId(R.id.rg_label);
-                rgLabel.setText("Sexo:");
-                rgLabel.setVisibility(View.VISIBLE);
-                rgLabel.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(rgLabel);
-                rbmasc = new RadioButton(getApplicationContext());
-                rbmasc.setId(R.id.masc);
-                rbmasc.setText("Masculino");
-                rbmasc.setTextColor(getResources().getColor(R.color.black));
-                rbmasc.setVisibility(View.VISIBLE);
-                rbfem = new RadioButton(getApplicationContext());
-                rbfem.setId(R.id.fem);
-                rbfem.setText("Femenino");
-                rbfem.setVisibility(View.VISIBLE);
-                rbfem.setTextColor(getResources().getColor(R.color.black));
-                rgroup = new RadioGroup(getApplicationContext());
-                rgroup.setId(R.id.rg_container);
-                rgroup.addView(rbmasc);
-                rgroup.addView(rbfem);
-                ll.addView(rgroup);
+                etedoCivilText.setVisibility(View.INVISIBLE);
+                btDate.setVisibility(View.INVISIBLE);
+                break;
             case 110110: //nombre, sexo, apellido, dob
-                tvNombres = new TextView(getApplicationContext());
-                tvNombres.setId(R.id.nombres);
-                tvNombres.setLayoutParams(params);
-                tvNombres.setVisibility(View.VISIBLE);
-                tvNombres.setText("Nombre(s):");
-                tvNombres.setTextColor(getResources().getColor(R.color.black));
-                etnombres_text = new EditText(getApplicationContext());
-                etnombres_text.setId(R.id.nombres_text);
-                etnombres_text.setVisibility(View.VISIBLE);
-                etnombres_text.setBackgroundColor(getResources().getColor(R.color.white));
-                etnombres_text.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(tvNombres);
-                ll.addView(etnombres_text);
-                tvApellido = new TextView(getApplicationContext());
-                tvApellido.setId(R.id.apellidos);
-                tvApellido.setLayoutParams(params);
-                tvApellido.setVisibility(View.VISIBLE);
-                tvApellido.setTextColor(getResources().getColor(R.color.black));
-                tvApellido.setText("Apellido:");
-                etApellidos_text = new EditText(getApplicationContext());
-                etApellidos_text.setId(R.id.apellidos_text);
-                etApellidos_text.setVisibility(View.VISIBLE);
-                etApellidos_text.setBackgroundColor(getResources().getColor(R.color.white));
-                etApellidos_text.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(tvApellido);
-                ll.addView(etApellidos_text);
-                rgLabel = new TextView(getApplicationContext());
-                rgLabel.setId(R.id.rg_label);
-                rgLabel.setText("Sexo:");
-                rgLabel.setVisibility(View.VISIBLE);
-                rgLabel.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(rgLabel);
-                rbmasc = new RadioButton(getApplicationContext());
-                rbmasc.setId(R.id.masc);
-                rbmasc.setText("Masculino");
-                rbmasc.setTextColor(getResources().getColor(R.color.black));
-                rbmasc.setVisibility(View.VISIBLE);
-                rbfem = new RadioButton(getApplicationContext());
-                rbfem.setId(R.id.fem);
-                rbfem.setText("Femenino");
-                rbfem.setVisibility(View.VISIBLE);
-                rbfem.setTextColor(getResources().getColor(R.color.black));
-                rgroup = new RadioGroup(getApplicationContext());
-                rgroup.setId(R.id.rg_container);
-                rgroup.addView(rbmasc);
-                rgroup.addView(rbfem);
-                ll.addView(rgroup);
-                btDate = new Button(getApplicationContext());
-                btDate.setId(R.id.btDate);
-                btDate.setLayoutParams(params);
-                btDate.setText("Fecha Nacimiento");
-                btDate.setVisibility(View.VISIBLE);
-                ll.addView(btDate);
+
+                etedoCivilText.setVisibility(View.INVISIBLE);
                 break;
             case 111000: //nombre, sexo, edo civil
-                //---- Nombre
-                tvNombres = new TextView(getApplicationContext());
-                tvNombres.setId(R.id.nombres);
-                tvNombres.setLayoutParams(params);
-                tvNombres.setVisibility(View.VISIBLE);
-                tvNombres.setText("Nombre(s):");
-                tvNombres.setTextColor(getResources().getColor(R.color.black));
-                etnombres_text = new EditText(getApplicationContext());
-                etnombres_text.setId(R.id.nombres_text);
-                etnombres_text.setVisibility(View.VISIBLE);
-                etnombres_text.setBackgroundColor(getResources().getColor(R.color.white));
-                etnombres_text.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(tvNombres);
-                ll.addView(etnombres_text);
-
-                //---- RG Label
-                rgLabel = new TextView(getApplicationContext());
-                rgLabel.setId(R.id.rg_label);
-                rgLabel.setText("Sexo:");
-                rgLabel.setVisibility(View.VISIBLE);
-                rgLabel.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(rgLabel);
-                rbmasc = new RadioButton(getApplicationContext());
-                rbmasc.setId(R.id.masc);
-                rbmasc.setText("Masculino");
-                rbmasc.setTextColor(getResources().getColor(R.color.black));
-                rbmasc.setVisibility(View.VISIBLE);
-                rbfem = new RadioButton(getApplicationContext());
-                rbfem.setId(R.id.fem);
-                rbfem.setText("Femenino");
-                rbfem.setVisibility(View.VISIBLE);
-                rbfem.setTextColor(getResources().getColor(R.color.black));
-                rgroup = new RadioGroup(getApplicationContext());
-                rgroup.setId(R.id.rg_container);
-                rgroup.addView(rbmasc);
-                rgroup.addView(rbfem);
-                ll.addView(rgroup);
-                //---- Edo Civil
-                tvedoCivil = new TextView(getApplicationContext());
-                tvedoCivil.setId(R.id.edoCivil);
-                tvedoCivil.setLayoutParams(params);
-                tvedoCivil.setText("Estado Civil:");
-                tvedoCivil.setTextColor(getResources().getColor(R.color.black));
-                tvedoCivil.setVisibility(View.VISIBLE);
-                etedoCivilText = new EditText(getApplicationContext());
-                etedoCivilText.setId(R.id.edoCivilText);
-                etedoCivilText.setLayoutParams(params);
-                etedoCivilText.setVisibility(View.VISIBLE);
-                etedoCivilText.setBackgroundColor(getResources().getColor(R.color.white));
-                etedoCivilText.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(tvedoCivil);
-                ll.addView(etedoCivilText);
-
+                btDate.setVisibility(View.INVISIBLE);
+                etApellidos_text.setVisibility(View.INVISIBLE);
                 break;
             case 111010://nombre, sexo, edo civil, dob
-                //---- Nombre
-                tvNombres = new TextView(getApplicationContext());
-                tvNombres.setId(R.id.nombres);
-                tvNombres.setLayoutParams(params);
-                tvNombres.setVisibility(View.VISIBLE);
-                tvNombres.setText("Nombre(s):");
-                tvNombres.setTextColor(getResources().getColor(R.color.black));
-                etnombres_text = new EditText(getApplicationContext());
-                etnombres_text.setId(R.id.nombres_text);
-                etnombres_text.setVisibility(View.VISIBLE);
-                etnombres_text.setBackgroundColor(getResources().getColor(R.color.white));
-                etnombres_text.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(tvNombres);
-                ll.addView(etnombres_text);
-                //---- RG Label
-                rgLabel = new TextView(getApplicationContext());
-                rgLabel.setId(R.id.rg_label);
-                rgLabel.setText("Sexo:");
-                rgLabel.setVisibility(View.VISIBLE);
-                rgLabel.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(rgLabel);
-                rbmasc = new RadioButton(getApplicationContext());
-                rbmasc.setId(R.id.masc);
-                rbmasc.setText("Masculino");
-                rbmasc.setTextColor(getResources().getColor(R.color.black));
-                rbmasc.setVisibility(View.VISIBLE);
-                rbfem = new RadioButton(getApplicationContext());
-                rbfem.setId(R.id.fem);
-                rbfem.setText("Femenino");
-                rbfem.setVisibility(View.VISIBLE);
-                rbfem.setTextColor(getResources().getColor(R.color.black));
-                rgroup = new RadioGroup(getApplicationContext());
-                rgroup.setId(R.id.rg_container);
-                rgroup.addView(rbmasc);
-                rgroup.addView(rbfem);
-                ll.addView(rgroup);
-                //---- Edo Civil
-                tvedoCivil = new TextView(getApplicationContext());
-                tvedoCivil.setId(R.id.edoCivil);
-                tvedoCivil.setLayoutParams(params);
-                tvedoCivil.setText("Estado Civil:");
-                tvedoCivil.setTextColor(getResources().getColor(R.color.black));
-                tvedoCivil.setVisibility(View.VISIBLE);
-                etedoCivilText = new EditText(getApplicationContext());
-                etedoCivilText.setId(R.id.edoCivilText);
-                etedoCivilText.setLayoutParams(params);
-                etedoCivilText.setVisibility(View.VISIBLE);
-                etedoCivilText.setBackgroundColor(getResources().getColor(R.color.white));
-                etedoCivilText.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(tvedoCivil);
-                ll.addView(etedoCivilText);
-                //--- Fecha Nac
-                btDate = new Button(getApplicationContext());
-                btDate.setId(R.id.btDate);
-                btDate.setLayoutParams(params);
-                btDate.setText("Fecha Nacimiento");
-                btDate.setVisibility(View.VISIBLE);
-                ll.addView(btDate);
+
+                etApellidos_text.setVisibility(View.INVISIBLE);
                 break;
             case 111110:
                 //---- Nombre
-                tvNombres = new TextView(getApplicationContext());
-                tvNombres.setId(R.id.nombres);
-                tvNombres.setLayoutParams(params);
-                tvNombres.setVisibility(View.VISIBLE);
-                tvNombres.setText("Nombre(s):");
-                tvNombres.setTextColor(getResources().getColor(R.color.black));
-                etnombres_text = new EditText(getApplicationContext());
-                etnombres_text.setId(R.id.nombres_text);
                 etnombres_text.setVisibility(View.VISIBLE);
-                etnombres_text.setBackgroundColor(getResources().getColor(R.color.white));
-                etnombres_text.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(tvNombres);
-                ll.addView(etnombres_text);
-                //----Apellidos
-                tvApellido = new TextView(getApplicationContext());
-                tvApellido.setId(R.id.apellidos);
-                tvApellido.setLayoutParams(params);
-                tvApellido.setVisibility(View.VISIBLE);
-                tvApellido.setText("Apellido:");
-                tvApellido.setTextColor(getResources().getColor(R.color.black));
-                etApellidos_text = new EditText(getApplicationContext());
-                etApellidos_text.setId(R.id.apellidos_text);
+//                //----Apellidos
                 etApellidos_text.setVisibility(View.VISIBLE);
-                etApellidos_text.setBackgroundColor(getResources().getColor(R.color.white));
-                etApellidos_text.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(tvApellido);
-                ll.addView(etApellidos_text);
-                //---- RG Label
-                rgLabel = new TextView(getApplicationContext());
-                rgLabel.setId(R.id.rg_label);
-                rgLabel.setText("Sexo:");
-                rgLabel.setVisibility(View.VISIBLE);
-                rgLabel.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(rgLabel);
-                rbmasc = new RadioButton(getApplicationContext());
-                rbmasc.setId(R.id.masc);
-                rbmasc.setText("Masculino");
-                rbmasc.setTextColor(getResources().getColor(R.color.black));
-                rbmasc.setVisibility(View.VISIBLE);
-                rbfem = new RadioButton(getApplicationContext());
-                rbfem.setId(R.id.fem);
-                rbfem.setText("Femenino");
-                rbfem.setVisibility(View.VISIBLE);
-                rbfem.setTextColor(getResources().getColor(R.color.black));
-                rgroup = new RadioGroup(getApplicationContext());
-                rgroup.setId(R.id.rg_container);
-                rgroup.addView(rbmasc);
-                rgroup.addView(rbfem);
-                ll.addView(rgroup);
                 //---- Edo Civil
-                tvedoCivil = new TextView(getApplicationContext());
-                tvedoCivil.setId(R.id.edoCivil);
-                tvedoCivil.setLayoutParams(params);
-                tvedoCivil.setText("Estado Civil:");
-                tvedoCivil.setTextColor(getResources().getColor(R.color.black));
-                tvedoCivil.setVisibility(View.VISIBLE);
-                etedoCivilText = new EditText(getApplicationContext());
-                etedoCivilText.setId(R.id.edoCivilText);
-                etedoCivilText.setLayoutParams(params);
                 etedoCivilText.setVisibility(View.VISIBLE);
-                etedoCivilText.setBackgroundColor(getResources().getColor(R.color.white));
-                etedoCivilText.setTextColor(getResources().getColor(R.color.black));
-                ll.addView(tvedoCivil);
-                ll.addView(etedoCivilText);
-                //--- Fecha Nac
-                btDate = new Button(getApplicationContext());
-                btDate.setId(R.id.btDate);
-                btDate.setLayoutParams(params);
-                btDate.setText("Fecha Nacimiento");
+//                //--- Fecha Nac
                 btDate.setVisibility(View.VISIBLE);
-                ll.addView(btDate);
+//                //---- RG Label
+                rgLabel.setVisibility(View.VISIBLE);
+                rbmasc.setVisibility(View.VISIBLE);
+                rbfem.setVisibility(View.VISIBLE);
                 break;
             default:
-                ll.removeAllViews();
-
+                //---- Nombre
+                etnombres_text.setVisibility(View.VISIBLE);
+//                //----Apellidos
+                etApellidos_text.setVisibility(View.VISIBLE);
+                //---- Edo Civil
+                etedoCivilText.setVisibility(View.VISIBLE);
+//                //--- Fecha Nac
+                btDate.setVisibility(View.VISIBLE);
+//                //---- RG Label
+                rgLabel.setVisibility(View.VISIBLE);
+                rbmasc.setVisibility(View.VISIBLE);
+                rbfem.setVisibility(View.VISIBLE);
                 break;
         }
         Toast.makeText(getApplicationContext(),Text,Toast.LENGTH_SHORT).show();
@@ -1399,7 +494,7 @@ public class encuestado_activity extends AppCompatActivity{
             // Poner ícono del drawer toggle
 //            ab.setHomeButtonEnabled(true);
             ab.setDisplayHomeAsUpEnabled(true);
-            ab.setHomeAsUpIndicator(R.mipmap.ic_action_discard);
+            ab.setHomeAsUpIndicator(R.mipmap.ic_arrow_back_white_24dp);
             ab.setHomeButtonEnabled(true);
         }
     }

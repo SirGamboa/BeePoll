@@ -99,31 +99,6 @@ public class encuesta_activity extends AppCompatActivity{
             e.printStackTrace();
         }
 
-       /** Esto con opciones del toolbar **/
-//        btnCon.setOnClickListener(new View.OnClickListener() { //oculta btns y nums, despliega next, cancel
-//            @Override
-//            public void onClick(View v) {
-//                //busca encuestado
-//                tr1.setVisibility(View.INVISIBLE);
-//                tr2.setVisibility(View.INVISIBLE);
-//                btnCon.setVisibility(View.INVISIBLE);
-//                btnMenu.setVisibility(View.INVISIBLE);
-//
-//                if (checkNewUser()) {
-//                    tvIDUser.setText(rcEdo.getClave());
-//                }
-//                if (rcEdo.checkEncuestado()) {
-//                    idEdo = rcEdo.getClave();
-//                    tvEnc.setText(Html.fromHtml(nom));
-//                    tvIDUser.setText(idEdo);
-//                }
-////
-//                rcEdo.close();
-//                btnNext.setVisibility(View.VISIBLE);
-//                btBack.setVisibility(View.VISIBLE);
-//                tvEnc.setText(Html.fromHtml(EncInfo));
-//            }
-//        }); //end btn Next
 
         try {
             cargaInfoEncuesta(EncInfo);

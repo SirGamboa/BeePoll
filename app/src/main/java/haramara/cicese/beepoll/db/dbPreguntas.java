@@ -18,6 +18,7 @@ public class dbPreguntas extends SQLiteOpenHelper{
     public static final String COLUMN_NAME_PREG_IDVAL = "idVal";
     public static final String COLUMN_NAME_TIPO ="tipo";
     public static final String COLUMN_NAME_PESO ="peso";
+    public static final String COLUMN_NAME_IMAGE ="idImage";
 
     private static final String DATABASE_NAME ="DRSurbee.db"; //nombre de la base de datos local
     private static final int DATABASE_VERSION = 1;
@@ -45,6 +46,8 @@ public class dbPreguntas extends SQLiteOpenHelper{
             + COLUMN_NAME_PESO
             + " text, "
             + COLUMN_NAME_TIPO
+            + " text, "
+            + COLUMN_NAME_IMAGE
             + " text "
             + "); ";
 

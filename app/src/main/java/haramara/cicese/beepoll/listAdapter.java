@@ -398,7 +398,7 @@ public class listAdapter extends BaseAdapter {
 //        httppost = new HttpPost(wsPost); //data.php | check
 //        httppost = new HttpPost("http://idi.cicese.mx/surbeeweb-ut3/webService/ws.php"); //data.php | check
 //        httppost = new HttpPost("http://idi.cicese.mx/surbeeweb-demo/webService/ws.php"); //data.php | check
-        String id_Enc, id_Preg, id_Endo, resp, idPregTipo, dataEdo, idVal;
+        String id_Enc, id_Preg, id_Endo, resp, idPregTipo, dataEdo, idVal, SendData = null;
         //noinspection UnusedAssignment
 //        idEdor = rcCon.readID(); //id encuestador
         Cursor c = rcRes.readAns(sTitle, String.valueOf(idEnc));
@@ -408,58 +408,22 @@ public class listAdapter extends BaseAdapter {
         JSONObject jObjct = new JSONObject();
         c.moveToFirst();
 //        StringEntity se = null;
-
-        while(!c.isAfterLast()){
-            id_Endo = c.getString(0);
-            idPregTipo = c.getString(1);
-            id_Enc = c.getString(2);
-            id_Preg = c.getString(3);
-            resp = c.getString(4);
-            idVal = c.getString(5)!=null?c.getString(5):"0";
-            // agregar Datos del encuestado.
-            dataEdo = rcEdo.getData(id_Endo);
-
-
-            try {
-                object.put("idEdo", id_Endo);
-                object.put("idPregTipo",idPregTipo);
-                object.put("idEnc", id_Enc);
-                object.put("idPreg", id_Preg);
-                object.put("idVal", idVal);
-                object.put("Resp", resp);
-                object.put("dataEdo", dataEdo);
-                object.put("IDUSER", Cid);
-
-                jsString = jsString.concat(object.toString());
-                if(!c.isLast()) {
-                    jsString = jsString.concat("-");
-                }
-//                se = new StringEntity(jsString);
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            System.out.println(object);
-//            System.out.println(se);
-            Log.i("SE JSON", String.valueOf(jsString));
-            status = true;
-            c.moveToNext();
-
-        } // end while
-        c.close();
         HttpURLConnection clienteURL = null;
+        String DatoTest = "id='01'&name='rodolfo'";
+        OutputStreamWriter wr = null;
         try {
             clienteURL = (HttpURLConnection) url.openConnection();
             clienteURL.setDoOutput(true);
-            clienteURL.setFixedLengthStreamingMode(jsString.length());
+            clienteURL.setFixedLengthStreamingMode(DatoTest.length());
             clienteURL.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 
-            OutputStreamWriter wr = new OutputStreamWriter(clienteURL.getOutputStream());
-            String valueto = "id=" + URLEncoder.encode(jsString, "UTF-8");
-            Log.i(TAG, valueto);
-            wr.write(valueto);
-            wr.flush();
-            wr.close();
+
+//            OutputStreamWriter wr = new OutputStreamWriter(clienteURL.getOutputStream());
+//            String valueto = "id=" + URLEncoder.encode(jsString, "UTF-8");
+//            Log.i(TAG, valueto);
+//            wr.write(valueto);
+//            wr.flush();
+//            wr.close();
         }catch (IOException e){
             e.printStackTrace();
         }
@@ -467,9 +431,74 @@ public class listAdapter extends BaseAdapter {
             if(clienteURL != null)
                 clienteURL.disconnect();
         }
+int i= 1;
+//        while(!c.isAfterLast()){
+            id_Endo = "idEdo="+ c.getString(0);
+            idPregTipo = "idPregTipo="+ c.getString(1);
+            id_Enc = "idEnc="+ c.getString(2);
+            id_Preg = "idPreg="+ c.getString(3);
+            resp = "resp="+c.getString(4);
+            if(c.getString(5)!= null){ idVal = "idVal="+c.getString(5); }
+            else{ idVal = "idVal=0"; }
+            // agregar Datos del encuestado.
+            dataEdo = "dataEdo=nodata";//+rcEdo.getData(id_Endo);
+
+            SendData = "?"+id_Enc+"&"+idPregTipo+"&"+id_Endo+"&"+id_Preg+"&"+resp+"&"+idVal+"&"+dataEdo;
+            System.out.println(SendData);
+//            System.out.println(se);
+            Log.i("SE JSON", String.valueOf(SendData));
+            status = true;
+            c.moveToNext();
+
+//            String valueto = "id=" + URLEncoder.encode(jsString, "UTF-8");
+//            Log.i(TAG, valueto);
+          //  String DatoTest = "id='01'&name='rodolfo'";
+            wr = new OutputStreamWriter(clienteURL.getOutputStream());
+            wr.write(DatoTest);
+            wr.flush();
+            wr.close();
+            Log.i("SEND-HTTP", "" + i);
+            i++;
+
+//        } // end while
+
+        c.close();
+//        HttpURLConnection clienteURL = null;
+//        try {
+//            clienteURL = (HttpURLConnection) url.openConnection();
+//            clienteURL.setDoOutput(true);
+//            clienteURL.setFixedLengthStreamingMode(jsString.length());
+//            clienteURL.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+//
+//            OutputStreamWriter wr = new OutputStreamWriter(clienteURL.getOutputStream());
+//            String valueto = "id=" + URLEncoder.encode(jsString, "UTF-8");
+//            Log.i(TAG, valueto);
+//            wr.write(valueto);
+//            wr.flush();
+//            wr.close();
+//        }catch (IOException e){
+//            e.printStackTrace();
+//        }
+//        finally{
+        if(status) {
+            switch (clienteURL.getResponseCode()){
+                case HttpURLConnection.HTTP_ACCEPTED:
+                    Log.i(TAG,"ACEPTED");
+                    break;
+                case HttpURLConnection.HTTP_OK:
+                    Log.i(TAG,"OK");
+                    break;
+                default:
+                    Log.i(TAG,clienteURL.getResponseMessage());
+                    break;
+
+            }
+            if(clienteURL != null)
+                clienteURL.disconnect();
+//        }
         Log.i("ADDED JSON SEND", jsString);
 
-        if(status) {
+
 
 //            System.out.println(clienteURL.getResponseMessage());
 //            int HTTPresp = clienteURL.getResponseCode();

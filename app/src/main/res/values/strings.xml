@@ -80,6 +80,10 @@
     <string name="edoTitle">Encuestado Nuevo</string>
     <string name="sendTextdate">Medium Text</string>
     <string name="none">none</string>
+    <string name="bar">yellow bar</string>
+    <string name="sexfem">Mujer</string>
+    <string name="mediu">Medium Text</string>
+    <string name="text">Large Text</string>
     <!--<string-array name="navDrawerItems">-->
         <!--<item>Home</item>-->
         <!--<item>fragment1</item>-->

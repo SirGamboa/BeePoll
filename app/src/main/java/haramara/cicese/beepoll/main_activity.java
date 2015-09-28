@@ -16,6 +16,10 @@ import android.view.View;
 
 import android.widget.TextView;
 
+import java.sql.SQLException;
+
+import haramara.cicese.beepoll.db.rcConfig;
+
 
 /**
  * Created by diseno on 9/14/15. for BeePoll
@@ -26,8 +30,9 @@ public class main_activity  extends AppCompatActivity{
     private String[] fViews;
     private String drawerTitle;
     ActionBarDrawerToggle mDrawerToggle;
-    String nHeader = "Rodolfo Robles";
-    String eHeader= "rodosel@gmail.com";
+    String nHeader = "No Name";
+    String eHeader= "NO@email.com";
+
 
     String TAG = "MainActivity";
 
@@ -38,6 +43,7 @@ public class main_activity  extends AppCompatActivity{
             R.mipmap.bp_bandeja,
             R.mipmap.bp_sesion
     };
+    rcConfig rcCon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,10 +91,18 @@ public class main_activity  extends AppCompatActivity{
     private void setupDrawerContent(NavigationView nView) {
         //--
         TextView tvHeader =  (TextView) nView.findViewById(R.id.nameHeader);
-        TextView tvMail =  (TextView) nView.findViewById(R.id.email);
+        TextView tvMail =  (TextView) nView.findViewById(R.id.emailHeader);
         // metodo para cargar de DB nombre y correo. **
-        tvHeader.setText(nHeader);
-        tvMail.setText(eHeader);
+        rcCon = new rcConfig(this);
+        try {
+            rcCon.open();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        String[] headerData = rcCon.getHeaderInfo();
+        rcCon.close();
+        tvHeader.setText(headerData[0]);
+        tvMail.setText(headerData[1]);
         //--
 
         nView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -128,6 +142,10 @@ public class main_activity  extends AppCompatActivity{
         if(title.contentEquals("Configuración")){
             flag = true;
             frg = "haramara.cicese.beepoll.fLogoff";
+        }
+        if(title.contentEquals("Ayuda")){
+            flag = true;
+            frg = "haramara.cicese.beepoll.fayuda";
         }
         if(title.contentEquals("Cerrar Sesión")){
             flag = true;

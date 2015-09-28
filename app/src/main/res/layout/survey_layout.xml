@@ -1,121 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+xmlns:tools="http://schemas.android.com/tools"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+android:orientation="vertical"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:id="@+id/mainRL">
+
     <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary" />
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:weightSum="1"
-        android:background="@color/white"
-        android:layout_below="@+id/toolbar">
-
+    android:id="@+id/toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:background="?attr/colorPrimary" />
+        <!--Encuestas abiertas  -->
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/noID"
-            android:id="@+id/tvIDEdo"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="50dp"
-            android:layout_marginRight="50dp"
-            android:fontFamily="Roboto"
-            android:gravity="center_horizontal"
-            android:textColor="#3fc3ff"
-            android:textSize="14sp"
-            tools:ignore="UnusedAttribute" />
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/desc_encuesta"
+        android:id="@+id/titleEncuesta"
+        android:gravity="center"
+        android:textColor="#3fc3ff"
+        android:layout_below="@+id/toolbar"
+        android:layout_alignParentStart="true" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/mText"
-            android:id="@+id/tvInstrucciones"
-            android:layout_marginLeft="50dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginRight="50dp"
-            android:fontFamily="Roboto"
-            android:textSize="16sp"
-            tools:ignore="UnusedAttribute"
-            android:layout_weight="0.15" />
+    <ImageView
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:id="@+id/ivPregunta"
+        android:gravity="center_horizontal|left"
+        android:layout_centerVertical="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="25dp"
+        android:background="#aaddff"
+        android:visibility="invisible" />
 
-        <RadioGroup
+            <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/respuesta_opcional"
-            android:textColor="@color/black"
-            android:orientation="horizontal"
-            android:layout_marginTop="38dp"
-            android:layout_weight="0.15"
-            android:showDividers="middle"
-            android:textAlignment="textStart"
+            android:id="@+id/RLAdd"
+            android:layout_marginLeft="45dp"
+            android:layout_marginRight="45dp"
+            android:gravity="fill_horizontal|center_horizontal"
             android:layout_gravity="center"
-            android:gravity="center_vertical"
-            tools:ignore="UnusedAttribute" />
-
-        <RelativeLayout
             android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:showDividers="middle"
-            android:textAlignment="textStart"
-            android:id="@+id/llQuest"
-            android:layout_weight="0.12"
-            tools:ignore="UnusedAttribute">
-            <!-- aqui van los respuestas u opciones multiples -->
-            <EditText
-                android:layout_width="match_parent"
+            android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/ivPregunta">
+
+
+
+            <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+                <ImageView
+                android:layout_width="10dp"
+                android:layout_height="fill_parent"
+                android:id="@+id/imageView4"
+                android:background="#ffe05f"
+                android:contentDescription="@string/bar"
+                android:visibility="visible"
+                />
+                <TextView
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/etResp"
-                android:textColor="@color/black"
-                android:orientation="horizontal"
-                android:showDividers="middle"
-                android:textAlignment="center"
-                android:theme="@style/AppTheme"
-                android:textColorHint="@color/black"
-                android:hint="@string/resp"
-                android:gravity="center"
-                tools:ignore="UnusedAttribute"
-                android:inputType="textImeMultiLine" />
+                android:layout_margin="20dp"
+                android:ems="10"
+                android:id="@+id/tvPreg" />
 
-        </RelativeLayout>
+            </TableRow>
+            <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/etOpcs"
-            android:textColor="@color/black"
-            android:orientation="horizontal"
-            android:showDividers="middle"
-            android:textAlignment="textStart"
-            android:theme="@style/AppTheme"
-            android:textColorHint="@color/black"
-            android:gravity="left"
-            android:layout_below="@+id/etResp"
-            android:visibility="visible"
-            android:layout_weight="0"
-            android:layout_gravity="left"
-            android:paddingLeft="15dp"
-            tools:ignore="ObsoleteLayoutParam,UnusedAttribute" />
+                <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/llQuest">
+
+                    <EditText
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dp"
+                    android:hint="@string/resp"
+                    android:ems="10"
+                    android:id="@+id/etResp"
+                    android:background="#ebeef0"  />
+
+                    <RadioGroup
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dp"
+                    android:id="@+id/rgResp" />
+                </RelativeLayout>
+
+            </TableRow>
 
 
-    </LinearLayout>
+
+
+            </LinearLayout>
+            <!--Encuestas abiertas end -->
+<!-- Encuestas Image -->
+    <!--Encuestas abiertas end -->
+
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/btFAB"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_margin="15dp"
-        android:layout_gravity="left|bottom"
-        android:src="@mipmap/ic_navigate_next_white_36dp"
-        app:elevation="6dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="26dp" />
+    android:id="@+id/btFAB"
+    android:layout_width="70dp"
+    android:layout_height="70dp"
+    android:layout_margin="15dp"
+    android:layout_gravity="left|bottom"
+    android:src="@mipmap/ic_action_next_item"
+    app:elevation="6dp"
+    android:layout_alignParentBottom="true"
+    android:layout_alignParentEnd="true"
+    android:layout_marginEnd="26dp"
+    />
+
 </RelativeLayout>

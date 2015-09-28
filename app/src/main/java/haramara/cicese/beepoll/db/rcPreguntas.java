@@ -23,7 +23,7 @@ public class rcPreguntas {
         ContentValues cv = new ContentValues();
         int i = 0; //count para lectura de datos
         String sID = Integer.toString(ID);
-        String sql = "select id_pregunta, idPregTipo, descripcion, tipo from " + dbTable.TABLE_NAME +" where "+ dbTable.COLUMN_NAME_IDENCUESTA +" = "+ sID;
+        String sql = "select id_pregunta, idPregTipo, descripcion, tipo, idImage from " + dbTable.TABLE_NAME +" where "+ dbTable.COLUMN_NAME_IDENCUESTA +" = "+ sID;
         String TAG = "rcPreguntas";
         Log.i(TAG, sql);
         Cursor c = database.rawQuery(sql, null);
@@ -35,6 +35,7 @@ public class rcPreguntas {
                     cv.put(dbTable.COLUMN_NAME_IDPREGTIPO, c.getString(1));
                     cv.put(dbTable.COLUMN_NAME_DESCRIPCION, c.getString(2));
                     cv.put(dbTable.COLUMN_NAME_TIPO, c.getString(3));
+                    cv.put(dbTable.COLUMN_NAME_IMAGE, c.getString(4));
                     i++;
                 }
                 c.moveToNext();
@@ -149,5 +150,22 @@ public class rcPreguntas {
 
         c.close();
         return data;
+    }
+
+    public String[] getPhotos() {
+        Cursor c;
+        String sql = "select idImage from " + dbTable.TABLE_NAME;
+        c = database.rawQuery(sql,null);
+        c.moveToFirst();
+        String[] data = new String[c.getCount()];
+        int i = 0;
+        while(!c.isAfterLast()){
+            data[i] = c.getString(0); // + ":"+ c.getString(1)+ ":"+ c.getString(2);
+            c.moveToNext();
+            i++;
+        }
+        c.close();
+
+        return  data;
     }
 }
